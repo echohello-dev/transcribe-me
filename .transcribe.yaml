@@ -1,0 +1,24 @@
+openai:
+  models:
+    - temperature: 0.1
+      max_tokens: 2048
+      model: claude-3-sonnet-20240229
+    - temperature: 0.3
+      max_tokens: 2048
+      model: claude-3-sonnet-20240229
+    - temperature: 0.5
+      max_tokens: 2048
+      model: claude-3-sonnet-20240229
+anthropic:
+  models:
+    - temperature: 0.1
+      max_tokens: 2048
+      model: claude-3-sonnet-20240229
+    - temperature: 0.3
+      max_tokens: 2048
+      model: claude-3-sonnet-20240229
+    - temperature: 0.5
+      max_tokens: 2048
+      model: claude-3-sonnet-20240229
+input_folder: input
+output_folder: output
