@@ -22,7 +22,7 @@ install-cli: check-ffmpeg
 	pip install .
 
 test:
-	python -m unittest discover -s tests
+	$(VENV) python -m unittest discover -s tests
 
 transcribe: install check-ffmpeg
 	$(VENV) python transcribe_me/main.py
