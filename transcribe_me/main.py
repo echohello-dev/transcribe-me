@@ -1,7 +1,7 @@
 import argparse
 import os
 from glob import glob
-from typing import Tuple
+from typing import Tuple, Dict, Any
 
 import anthropic
 import openai
@@ -86,48 +86,50 @@ def transcribe_audio(file_path: str, output_path: str) -> None:
         file.write(full_transcription)
 
 
-def generate_summary(transcription: str, temperature: float, max_tokens: int) -> Tuple[str, str]:
+def generate_summary(transcription: str, model_config: Dict[str, Any]) -> str:
     """
-    Generate summaries from the transcription using OpenAI and Anthropic models.
+    Generate a summary from the transcription using the specified model configuration.
 
     Args:
         transcription (str): The full transcription text.
-        temperature (float): Temperature value for controlling randomness in the summaries.
-        max_tokens (int): Maximum number of tokens for the summaries.
+        model_config (Dict[str, Any]): The configuration for the model to be used for summary generation.
 
     Returns:
-        Tuple[str, str]: OpenAI summary and Anthropic summary.
+        str: The generated summary.
     """
+    temperature = model_config["temperature"]
+    max_tokens = model_config["max_tokens"]
+    model_name = model_config["model"]
+
     input_tokens = len(transcription.split())
     max_tokens = min(max_tokens, 3000)
 
-    # OpenAI summary
-    openai_response = openai.chat.completions.create(
-        model="gpt-4",
-        messages=[
-            {
-                "role": "system",
-                "content": "Generate a summary with key points in bold and a Next Steps section, use Markdown, be a concise tech expert but kind to non-technical readers.",
-            },
-            {"role": "user", "content": transcription},
-        ],
-        temperature=temperature,
-        max_tokens=max_tokens,
-    )
-    openai_summary = openai_response.choices[0].message.content.strip()
+    if "openai" in model_name:
+        openai_response = openai.chat.completions.create(
+            model="gpt-4",
+            messages=[
+                {
+                    "role": "system",
+                    "content": "Generate a summary with key points in bold and a Next Steps section, use Markdown, be a concise tech expert but kind to non-technical readers.",
+                },
+                {"role": "user", "content": transcription},
+            ],
+            temperature=temperature,
+            max_tokens=max_tokens,
+        )
+        summary = openai_response.choices[0].message.content.strip()
+    else:
+        anthropic_client = anthropic.Anthropic(api_key=ANTHROPIC_API_KEY)
+        anthropic_response = anthropic_client.messages.create(
+            model=model_name,
+            max_tokens=max_tokens,
+            temperature=temperature,
+            system="Generate a summary with key points in bold and a Next Steps section, use Markdown, be a concise tech expert but kind to non-technical readers.",
+            messages=[{"role": "user", "content": transcription}],
+        )
+        summary = anthropic_response.content[0].text
 
-    # Anthropic summary
-    anthropic_client = anthropic.Anthropic(api_key=ANTHROPIC_API_KEY)
-    anthropic_response = anthropic_client.messages.create(
-        model="claude-3-sonnet-20240229",
-        max_tokens=max_tokens,
-        temperature=temperature,
-        system="Generate a summary with key points in bold and a Next Steps section, use Markdown, be a concise tech expert but kind to non-technical readers.",
-        messages=[{"role": "user", "content": transcription}],
-    )
-    anthropic_summary = anthropic_response.content[0].text
-
-    return openai_summary, anthropic_summary
+    return summary
 
 
 def install_config():
@@ -135,8 +137,20 @@ def install_config():
     Create a .transcribe.yaml file in the current directory and prompt the user to input API keys if not set.
     """
     config = {
-        "openai": {"temperature": 0.3, "max_tokens": 1000},
-        "anthropic": {"temperature": 0.3, "max_tokens": 1000},
+        "openai": {
+            "models": [
+                {"temperature": 0.1, "max_tokens": 2048, "model": "gpt-4"},
+                {"temperature": 0.3, "max_tokens": 2048, "model": "gpt-4"},
+                {"temperature": 0.5, "max_tokens": 2048, "model": "gpt-4"},
+            ]
+        },
+        "anthropic": {
+            "models": [
+                {"temperature": 0.1, "max_tokens": 2048, "model": "claude-3-sonnet-20240229"},
+                {"temperature": 0.3, "max_tokens": 2048, "model": "claude-3-sonnet-20240229"},
+                {"temperature": 0.5, "max_tokens": 2048, "model": "claude-3-sonnet-20240229"},
+            ]
+        },
         "input_folder": "input",
         "output_folder": "output",
     }
@@ -212,38 +226,55 @@ def main():
             with open(".transcribe.yaml", "r") as f:
                 config = yaml.safe_load(f)
 
-            openai_temp = config["openai"]["temperature"]
-            anthropic_temp = config["anthropic"]["temperature"]
-            openai_max_tokens = config["openai"]["max_tokens"]
-            anthropic_max_tokens = config["anthropic"]["max_tokens"]
+            openai_models = config["openai"]["models"]
+            anthropic_models = config["anthropic"]["models"]
 
             # Save summaries in markdown files
-            openai_summary_file_03 = os.path.join(output_folder, f"{os.path.splitext(filename)[0]} OpenAI Summary (Temp {openai_temp}).md")
-            anthropic_summary_file_03 = os.path.join(output_folder, f"{os.path.splitext(filename)[0]} Anthropic Summary (Temp {anthropic_temp}).md")
+            for model_config in openai_models:
+                openai_summary_file = os.path.join(
+                    output_folder,
+                    f"{os.path.splitext(filename)[0]} OpenAI Summary (Temp {model_config['temperature']} - {model_config['model']}).md",
+                )
 
-            # Skip if summary files already exist
-            if os.path.exists(openai_summary_file_03) and os.path.exists(anthropic_summary_file_03):
-                print(f"Skipping {filename} - Summary files already exist.")
-                continue
+                # Skip if summary file already exists
+                if os.path.exists(openai_summary_file):
+                    continue
 
-            openai_summary, anthropic_summary = generate_summary(transcription, openai_temp, openai_max_tokens)
+                openai_summary = generate_summary(transcription, model_config)
 
-            print(f"OpenAI Summary (Temp {openai_temp}):")
-            print(openai_summary)
-            print(f"\nAnthropic Summary (Temp {anthropic_temp}):")
-            print(anthropic_summary)
+                print(f"OpenAI Summary (Temp {model_config['temperature']} - {model_config['model']}):")
+                print(openai_summary)
 
-            # Delete the summary files if they already exist
-            if os.path.exists(openai_summary_file_03):
-                os.remove(openai_summary_file_03)
-            if os.path.exists(anthropic_summary_file_03):
-                os.remove(anthropic_summary_file_03)
+                # Delete the summary file if it already exists
+                if os.path.exists(openai_summary_file):
+                    os.remove(openai_summary_file)
 
-            # Write the summaries to the files
-            with open(openai_summary_file_03, "w", encoding="utf-8") as file:
-                file.write(openai_summary)
-            with open(anthropic_summary_file_03, "w", encoding="utf-8") as file:
-                file.write(anthropic_summary)
+                # Write the summary to the file
+                with open(openai_summary_file, "w", encoding="utf-8") as file:
+                    file.write(openai_summary)
+
+            for model_config in anthropic_models:
+                anthropic_summary_file = os.path.join(
+                    output_folder,
+                    f"{os.path.splitext(filename)[0]} Anthropic Summary (Temp {model_config['temperature']} - {model_config['model']}).md",
+                )
+
+                # Skip if summary file already exists
+                if os.path.exists(anthropic_summary_file):
+                    continue
+
+                anthropic_summary = generate_summary(transcription, model_config)
+
+                print(f"\nAnthropic Summary (Temp {model_config['temperature']} - {model_config['model']}):")
+                print(anthropic_summary)
+
+                # Delete the summary file if it already exists
+                if os.path.exists(anthropic_summary_file):
+                    os.remove(anthropic_summary_file)
+
+                # Write the summary to the file
+                with open(anthropic_summary_file, "w", encoding="utf-8") as file:
+                    file.write(anthropic_summary)
         except Exception as e:
             print(f"An error occurred while processing {file_path}: {e}")
         finally:
