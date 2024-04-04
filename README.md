@@ -2,6 +2,20 @@
 
 Transcribe Me is a CLI-driven Python application that transcribes audio files using the OpenAI Whisper API and generates summaries of the transcriptions using both OpenAI's GPT-4 and Anthropic's Claude models.
 
+```mermaid
+graph TD
+    A[Load Config] --> B[Get Audio Files]
+    B --> C{Audio File Exists?}
+    C --Yes--> D[Transcribe Audio File]
+    D --> E[Generate Summaries]
+    E --> F[Save Transcription]
+    F --> G[Save Summaries]
+    G --> H[Clean Up Temporary Files]
+    H --> B
+    C --No--> I[Print Warning]
+    I --> B
+```
+
 ## Setup
 
 1. Clone the repository.
@@ -36,6 +50,21 @@ Transcribe Me is a CLI-driven Python application that transcribes audio files us
    ```bash
    make install-cli
    ```
+
+```mermaid
+graph TD
+   A[Clone Repository] --> B[Install ASDF and Homebrew]
+   B --> C[Install Python and FFmpeg]
+   C --> D[Install Python Dependencies]
+   D --> E[Configure API Keys]
+   E --> F[Place Audio Files]
+   F --> G[Run Application]
+
+   A --> D
+   D --> E
+   E --> F
+   F --> G
+```
 
 ## Usage
 
