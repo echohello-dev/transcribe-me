@@ -188,12 +188,10 @@ def install_config():
 
     if not OPENAI_API_KEY:
         openai_key = input("Enter your OpenAI API key: ")
-        config["openai"]["api_key"] = openai_key
         append_to_shell_profile(f"export OPENAI_API_KEY={openai_key}")
 
     if not ANTHROPIC_API_KEY:
         anthropic_key = input("Enter your Anthropic API key: ")
-        config["anthropic"]["api_key"] = anthropic_key
         append_to_shell_profile(f"export ANTHROPIC_API_KEY={anthropic_key}")
 
     with open(".transcribe.yaml", "w") as f:

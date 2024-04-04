@@ -100,6 +100,31 @@ graph TD
 
    The application will transcribe each audio file in the input directory and save the transcriptions to the output directory. It will also generate summaries of the transcriptions using the configured models and save them to the output directory.
 
+## :gear: Configuration
+
+The application uses a configuration file (`.transcribe.yaml`) to specify settings such as input/output directories, API keys, models, and their configurations. The configuration file is created automatically when you run the `transcribe-me install` command.
+
+Here is an example configuration file:
+
+```yaml
+openai:
+  models:
+    - temperature: 0.1
+      max_tokens: 2048
+      model: gpt-4
+      system_prompt: Generate a summary with key points in bold and a Next Steps section, use Markdown, be a concise tech expert but kind to non-technical readers.
+
+anthropic:
+  models:
+    - temperature: 0.8
+      max_tokens: 2048
+      model: claude-3-sonnet-20240229
+      system_prompt: Generate something creative and interesting, use Markdown, be a concise tech expert but kind to non-technical readers.
+
+input_folder: input
+output_folder: output
+```
+
 ## Additional Make Commands
 
 - `freeze`: Saves the installed Python package versions to the `requirements.txt` file.
