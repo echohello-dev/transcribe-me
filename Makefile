@@ -1,13 +1,13 @@
 VENV := . venv/bin/activate &&
 
-ifeq (, $(shell which ffmpeg))
-	$(error "No ffmpeg in PATH, please install ffmpeg"
-endif
 
 freeze:
 	$(VENV) pip freeze > requirements.txt
 
 install:
+ifeq (, $(shell which ffmpeg))
+	$(error "No ffmpeg in PATH, please install ffmpeg")
+endif
 ifneq (, $(shell which asdf))
 	asdf install
 endif
