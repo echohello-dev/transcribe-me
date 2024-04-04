@@ -21,7 +21,7 @@ endif
 install-cli: check-ffmpeg
 	pip install .
 
-test:
+test: install
 	$(VENV) python -m unittest discover -s tests
 
 transcribe: install check-ffmpeg

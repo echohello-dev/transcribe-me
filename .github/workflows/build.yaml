@@ -21,8 +21,5 @@ jobs:
         with:
           python-version: 3.12.2
 
-      - name: Install
-        run: make install
-
       - name: Test
         run: make test
