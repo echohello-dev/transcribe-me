@@ -16,7 +16,26 @@ graph TD
     I --> B
 ```
 
-## Setup
+## :key: Key Features
+
+- **Audio Transcription**: Transcribes audio files using the OpenAI Whisper API. It supports both MP3 and M4A formats and can handle large files by splitting them into smaller chunks for transcription.
+- **Summary Generation**: Generates summaries of the transcriptions using both OpenAI's GPT-4 and Anthropic's Claude models. The summaries are saved in Markdown format and include key points in bold and a "Next Steps" section.
+- **Configurable Models**: Supports multiple models for OpenAI and Anthropic, with configurable temperature, max_tokens, and system prompts.
+
+## :rocket: How it Works
+
+The Transcribe Me application follows a straightforward workflow:
+
+1. **Load Configuration**: The application loads the configuration from the `.transcribe.yaml` file, which includes settings for input/output directories, models, and their configurations.
+2. **Get Audio Files**: The application gets a list of audio files from the input directory specified in the configuration.
+3. **Check Existing Transcriptions**: For each audio file, the application checks if there is an existing transcription file. If a transcription file exists, it skips to the next audio file.
+4. **Transcribe Audio File**: If no transcription file exists, the application transcribes the audio file using the OpenAI Whisper API. It splits the audio file into smaller chunks for efficient transcription.
+5. **Generate Summaries**: After transcription, the application generates summaries of the transcription using the configured models (OpenAI GPT-4 and Anthropic Claude).
+6. **Save Transcription and Summaries**: The application saves the transcription to a text file and the summaries from each configured model to separate Markdown files in the output directory.
+7. **Clean Up Temporary Files**: The application removes any temporary files generated during the transcription process.
+8. **Repeat**: The process repeats for each audio file in the input directory.
+
+## :computer: Setup
 
 1. Clone the repository.
 2. Install the required tools using ASDF (for managing tool versions) and Homebrew (for installing dependencies):
@@ -66,7 +85,7 @@ graph TD
    F --> G
 ```
 
-## Usage
+## :wrench: Usage
 
 1. Place your audio files in the `input` directory (or any other directory specified in the configuration).
 2. Run the application:
@@ -86,21 +105,8 @@ graph TD
 - `freeze`: Saves the installed Python package versions to the `requirements.txt` file.
 - `install-cli`: Installs the application as a command-line interface (CLI) tool.
 
-## Features
-
-- **Audio Transcription**: Transcribes audio files using the OpenAI Whisper API. It supports both MP3 and M4A formats and can handle large files by splitting them into smaller chunks for transcription.
-- **Summary Generation**: Generates summaries of the transcriptions using both OpenAI's GPT-4 and Anthropic's Claude models. The summaries are saved in Markdown format and include key points in bold and a "Next Steps" section.
-- **Configurable Models**: Supports multiple models for OpenAI and Anthropic, with configurable temperature, max_tokens, and system prompts.
-- **Error Handling**: The application handles errors gracefully and provides informative error messages. It also cleans up temporary files after processing each audio file.
-
 ## Limitations
 
 - The application requires API keys for both OpenAI and Anthropic. These keys are not provided with the application and must be obtained separately.
 - The application is designed to run on a single machine and does not support distributed processing. As a result, the speed of transcription and summary generation is limited by the performance of the machine it is running on.
 - The application does not support real-time transcription or summary generation. It processes audio files one at a time and must complete the transcription and summary generation for each file before moving on to the next one.
-
-## Future Work
-
-- **Parallel Processing**: Implement parallel processing to transcribe multiple audio files or chunks of audio simultaneously.
-- **Real-Time Transcription and Summary Generation**: Modify the application to support real-time transcription and summary generation.
-- **User Interface**: Develop a user interface to make the application more accessible to non-technical users.
