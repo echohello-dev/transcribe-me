@@ -11,6 +11,7 @@ from tqdm import tqdm
 # Check if API keys are set
 OPENAI_API_KEY = os.environ.get("OPENAI_API_KEY")
 ANTHROPIC_API_KEY = os.environ.get("ANTHROPIC_API_KEY")
+
 if not OPENAI_API_KEY:
     raise ValueError("OPENAI_API_KEY is not set")
 if not ANTHROPIC_API_KEY:
@@ -145,6 +146,8 @@ def main():
     os.makedirs(input_folder, exist_ok=True)
     os.makedirs(output_folder, exist_ok=True)
 
+    files_transcribed = False
+
     for filename in os.listdir(input_folder):
         file_path = os.path.join(input_folder, filename)
         output_file = os.path.join(output_folder, f"{os.path.splitext(filename)[0]}.txt")
@@ -152,6 +155,7 @@ def main():
             if not os.path.exists(output_file):
                 print(f"Transcribing audio file: {file_path}")
                 transcribe_audio(file_path, output_file)
+                files_transcribed = True
             else:
                 with open(output_file, "r", encoding="utf-8") as file:
                     transcription = file.read()
@@ -229,6 +233,8 @@ def main():
             for file in glob(f"{file_path.partition('.')[0]}_part*.mp3"):
                 os.remove(file)
 
+    if files_transcribed == 0:
+        print("Warning: No files have been transcribed.")
 
 if __name__ == "__main__":
     main()
