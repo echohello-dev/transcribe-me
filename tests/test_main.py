@@ -28,6 +28,7 @@ class MockAnthropic:
 
 class TestMain(unittest.TestCase):
 
+    @patch.dict('os.environ', {'OPENAI_API_KEY': 'mock_api_key', 'ANTHROPIC_API_KEY': 'mock_api_key'})
     @patch('os.path.splitext')
     @patch('transcribe_me.main.AudioSegment.from_file')
     def test_split_audio(self, mock_from_file, mock_splitext):
@@ -36,6 +37,7 @@ class TestMain(unittest.TestCase):
         result = main.split_audio('file.mp3')
         self.assertEqual(result, ['file_part1.mp3'])
 
+    @patch.dict('os.environ', {'OPENAI_API_KEY': 'mock_api_key', 'ANTHROPIC_API_KEY': 'mock_api_key'})
     @patch('openai.audio.transcriptions.create')
     @patch('builtins.open', new_callable=mock_open, read_data="data")
     def test_transcribe_chunk(self, mock_open, mock_create):
@@ -44,6 +46,7 @@ class TestMain(unittest.TestCase):
         result = main.transcribe_chunk('file.mp3')
         self.assertEqual(result, 'transcription')
 
+    @patch.dict('os.environ', {'OPENAI_API_KEY': 'mock_api_key', 'ANTHROPIC_API_KEY': 'mock_api_key'})
     @patch('os.remove')
     @patch('transcribe_me.main.split_audio')
     @patch('transcribe_me.main.transcribe_chunk')
