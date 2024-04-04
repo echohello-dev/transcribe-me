@@ -1,5 +1,3 @@
-Sure, here's the updated README with instructions for using Make commands for setup and running the application:
-
 # Transcribe Me
 
 Transcribe Me is a CLI-driven Python application that transcribes audio files using the OpenAI Whisper API and generates summaries of the transcriptions using both OpenAI's GPT-4 and Anthropic's Claude models.
