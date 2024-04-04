@@ -14,11 +14,14 @@ endif
 	python3 -m venv venv
 	$(VENV) pip install -r requirements.txt
 
+install-cli:
+	pip install .
+
+test:
+	python -m unittest discover -s tests
+
 transcribe: install
 	$(VENV) python transcribe_me/main.py
 
 transcribe-install: install
 	$(VENV) python transcribe_me/main.py install
-
-install-cli:
-	pip install .

@@ -1,8 +1,7 @@
 import argparse
 import os
 from glob import glob
-from typing import Tuple, Dict, Any
-import sys
+from typing import Dict, Any
 
 import anthropic
 import openai
