@@ -2,6 +2,7 @@ import argparse
 import os
 from glob import glob
 from typing import Tuple, Dict, Any
+import sys
 
 import anthropic
 import openai
@@ -100,6 +101,7 @@ def generate_summary(transcription: str, model_config: Dict[str, Any]) -> str:
     temperature = model_config["temperature"]
     max_tokens = model_config["max_tokens"]
     model_name = model_config["model"]
+    system_prompt = model_config["system_prompt"]
 
     input_tokens = len(transcription.split())
     max_tokens = min(max_tokens, 3000)
@@ -110,7 +112,7 @@ def generate_summary(transcription: str, model_config: Dict[str, Any]) -> str:
             messages=[
                 {
                     "role": "system",
-                    "content": "Generate a summary with key points in bold and a Next Steps section, use Markdown, be a concise tech expert but kind to non-technical readers.",
+                    "content": system_prompt,
                 },
                 {"role": "user", "content": transcription},
             ],
@@ -124,7 +126,7 @@ def generate_summary(transcription: str, model_config: Dict[str, Any]) -> str:
             model=model_name,
             max_tokens=max_tokens,
             temperature=temperature,
-            system="Generate a summary with key points in bold and a Next Steps section, use Markdown, be a concise tech expert but kind to non-technical readers.",
+            system=system_prompt,
             messages=[{"role": "user", "content": transcription}],
         )
         summary = anthropic_response.content[0].text
@@ -139,16 +141,46 @@ def install_config():
     config = {
         "openai": {
             "models": [
-                {"temperature": 0.1, "max_tokens": 2048, "model": "gpt-4"},
-                {"temperature": 0.3, "max_tokens": 2048, "model": "gpt-4"},
-                {"temperature": 0.5, "max_tokens": 2048, "model": "gpt-4"},
+                {
+                    "temperature": 0.1,
+                    "max_tokens": 2048,
+                    "model": "gpt-4",
+                    "system_prompt": "Generate a summary with key points in bold and a Next Steps section, use Markdown, be a concise tech expert but kind to non-technical readers.",
+                },
+                {
+                    "temperature": 0.3,
+                    "max_tokens": 2048,
+                    "model": "gpt-4",
+                    "system_prompt": "Generate a summary with key points in bold and a Next Steps section, use Markdown, be a concise tech expert but kind to non-technical readers.",
+                },
+                {
+                    "temperature": 0.5,
+                    "max_tokens": 2048,
+                    "model": "gpt-4",
+                    "system_prompt": "Generate a summary with key points in bold and a Next Steps section, use Markdown, be a concise tech expert but kind to non-technical readers.",
+                },
             ]
         },
         "anthropic": {
             "models": [
-                {"temperature": 0.1, "max_tokens": 2048, "model": "claude-3-sonnet-20240229"},
-                {"temperature": 0.3, "max_tokens": 2048, "model": "claude-3-sonnet-20240229"},
-                {"temperature": 0.5, "max_tokens": 2048, "model": "claude-3-sonnet-20240229"},
+                {
+                    "temperature": 0.1,
+                    "max_tokens": 2048,
+                    "model": "claude-3-sonnet-20240229",
+                    "system_prompt": "Generate a summary with key points in bold and a Next Steps section, use Markdown, be a concise tech expert but kind to non-technical readers.",
+                },
+                {
+                    "temperature": 0.3,
+                    "max_tokens": 2048,
+                    "model": "claude-3-sonnet-20240229",
+                    "system_prompt": "Generate a summary with key points in bold and a Next Steps section, use Markdown, be a concise tech expert but kind to non-technical readers.",
+                },
+                {
+                    "temperature": 0.5,
+                    "max_tokens": 2048,
+                    "model": "claude-3-sonnet-20240229",
+                    "system_prompt": "Generate a summary with key points in bold and a Next Steps section, use Markdown, be a concise tech expert but kind to non-technical readers.",
+                },
             ]
         },
         "input_folder": "input",
@@ -192,12 +224,12 @@ def append_to_shell_profile(line):
 
 def main():
     parser = argparse.ArgumentParser(description="Transcribe audio files and generate summaries.")
-    parser.add_argument("--install", action="store_true", help="Install and configure the application.")
+    parser.add_argument("command", nargs="?", choices=["install"], help="Command to execute.")
     parser.add_argument("--input", type=str, default="input", help="Path to the input folder containing audio files.")
     parser.add_argument("--output", type=str, default="output", help="Path to the output folder to save transcriptions and summaries.")
     args = parser.parse_args()
 
-    if args.install:
+    if args.command == "install":
         install_config()
         return
 

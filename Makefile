@@ -10,5 +10,8 @@ install:
 transcribe: install
 	$(VENV) python transcribe_me/main.py
 
+transcribe-install: install
+	$(VENV) python transcribe_me/main.py install
+
 install-cli:
 	pip install .
