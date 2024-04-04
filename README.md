@@ -27,16 +27,26 @@ Transcribe Me is a CLI-driven Python application that transcribes audio files us
    make install
    ```
 
-4. Run the `transcribe-me install` command to create the `.transcribe.yaml` configuration file and provide your API keys for OpenAI and Anthropic:
+3. Run the `transcribe-me install` command to create the `.transcribe.yaml` configuration file and provide your API keys for OpenAI and Anthropic:
 
    ```bash
    make transcribe-install
+   ```
+
+4. (Optional) Install the application as a command-line interface (CLI) tool:
+
+   ```bash
+   make install-cli
    ```
 
 ## Usage
 
 1. Place your audio files in the `input` directory (or any other directory specified in the configuration).
 2. Run the application:
+
+   ```bash
+   transcribe-me
+   ```
 
    ```bash
    make transcribe
