@@ -1,9 +1,11 @@
+import argparse
 from glob import glob
 import anthropic
 import openai
 from pydub import AudioSegment
 import os
 from tqdm import tqdm
+import argparse
 
 if not os.environ.get("OPENAI_API_KEY"):
     raise ValueError("OPENAI_API_KEY is not set")
@@ -134,8 +136,22 @@ def generate_summary(transcription, temperature=0.3):
 
 
 def main():
-    input_folder = "input"
-    output_folder = "output"
+    parser = argparse.ArgumentParser(description='Transcribe audio files and generate summaries.')
+    parser.add_argument('--input', type=str, default='input', help='Path to the input folder containing audio files.')
+    parser.add_argument('--output', type=str, default='output', help='Path to the output folder to save transcriptions and summaries.')
+    args = parser.parse_args()
+
+    input_folder = args.input
+    output_folder = args.output
+
+    # Create input and output folders if they don't exist
+    if not os.path.exists(input_folder):
+        os.makedirs(input_folder)
+        print(f"The input folder does not exist. Created folder: {os.path.abspath(input_folder)}")
+
+    if not os.path.exists(output_folder):
+        os.makedirs(output_folder)
+        print(f"The output folder does not exist. Created folder: {os.path.abspath(input_folder)}")
 
     for filename in os.listdir(input_folder):
         file_path = os.path.join(input_folder, filename)
