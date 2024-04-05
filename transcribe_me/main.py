@@ -234,6 +234,19 @@ def append_to_shell_profile(line):
 
     print(f"API key added to {profile_file}")
 
+def read_transcription(output_file: str) -> str:
+    """
+    Read the transcription from the specified output file.
+
+    Args:
+        output_file (str): The path to the output file.
+
+    Returns:
+        str: The transcription text.
+    """
+    with open(output_file, "r", encoding="utf-8") as file:
+        transcription = file.read()
+    return transcription
 
 def main():
     parser = argparse.ArgumentParser(description="Transcribe audio files and generate summaries.")
@@ -274,15 +287,14 @@ def main():
                 print(f"Transcribing audio file: {file_path}")
                 transcribe_audio(file_path, output_file)
                 files_transcribed = True
-            else:
-                with open(output_file, "r", encoding="utf-8") as file:
-                    transcription = file.read()
+                continue
 
             with open(DEFAULT_CONFIG_FILE, "r") as f:
                 config = yaml.safe_load(f)
 
             openai_models = config["openai"]["models"]
             anthropic_models = config["anthropic"]["models"]
+            transcription = read_transcription(output_file)
 
             # Save summaries in markdown files
             for model_config in openai_models:
@@ -332,6 +344,7 @@ def main():
                     file.write(anthropic_summary)
         except Exception as e:
             print(f"An error occurred while processing {file_path}: {e}")
+            raise e
         finally:
             # Delete the _part* MP3 files
             for file in glob(f"{file_path.partition('.')[0]}_part*.mp3"):
