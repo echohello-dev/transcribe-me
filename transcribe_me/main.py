@@ -88,7 +88,7 @@ def transcribe_audio(file_path: str, output_path: str) -> None:
         file.write(full_transcription)
 
 
-def generate_summary(transcription: str, model_config: Dict[str, Any]) -> str:
+def generate_summary(transcription: str, platform: str, model_config: Dict[str, Any]) -> str:
     """
     Generate a summary from the transcription using the specified model configuration.
 
@@ -106,7 +106,7 @@ def generate_summary(transcription: str, model_config: Dict[str, Any]) -> str:
     input_tokens = len(transcription.split())
     max_tokens = min(int(0.3 * input_tokens), 3000)
 
-    if "openai" in model_name:
+    if "openai" in platform:
         openai_response = openai.chat.completions.create(
             model="gpt-4",
             messages=[
@@ -120,7 +120,7 @@ def generate_summary(transcription: str, model_config: Dict[str, Any]) -> str:
             max_tokens=max_tokens,
         )
         summary = openai_response.choices[0].message.content.strip()
-    else:
+    elif "anthropic" in platform:
         anthropic_client = anthropic.Anthropic(api_key=ANTHROPIC_API_KEY)
         anthropic_response = anthropic_client.messages.create(
             model=model_name,
@@ -307,7 +307,7 @@ def main():
                 if os.path.exists(openai_summary_file):
                     continue
 
-                openai_summary = generate_summary(transcription, model_config)
+                openai_summary = generate_summary(transcription, "openai", model_config)
 
                 print(f"OpenAI Summary (Temp {model_config['temperature']} - {model_config['model']}):")
                 print(openai_summary)
@@ -330,7 +330,7 @@ def main():
                 if os.path.exists(anthropic_summary_file):
                     continue
 
-                anthropic_summary = generate_summary(transcription, model_config)
+                anthropic_summary = generate_summary(transcription, "anthropic", model_config)
 
                 print(f"\nAnthropic Summary (Temp {model_config['temperature']} - {model_config['model']}):")
                 print(anthropic_summary)
