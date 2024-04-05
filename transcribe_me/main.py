@@ -100,12 +100,11 @@ def generate_summary(transcription: str, model_config: Dict[str, Any]) -> str:
         str: The generated summary.
     """
     temperature = model_config["temperature"]
-    max_tokens = model_config["max_tokens"]
     model_name = model_config["model"]
     system_prompt = model_config["system_prompt"]
 
     input_tokens = len(transcription.split())
-    max_tokens = min(max_tokens, 3000)
+    max_tokens = min(int(0.3 * input_tokens), 3000)
 
     if "openai" in model_name:
         openai_response = openai.chat.completions.create(
