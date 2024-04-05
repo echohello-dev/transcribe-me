@@ -9,9 +9,11 @@ from pydub import AudioSegment
 from tqdm import tqdm
 import yaml
 
-# Check if API keys are set
 OPENAI_API_KEY = os.environ.get("OPENAI_API_KEY")
 ANTHROPIC_API_KEY = os.environ.get("ANTHROPIC_API_KEY")
+DEFAULT_OUTPUT_FOLDER = "output"
+DEFAULT_INPUT_FOLDER = "input"
+DEFAULT_CONFIG_FILE = ".transcribe.yaml"
 
 
 def split_audio(file_path: str, interval_minutes: int = 10) -> list[str]:
@@ -135,7 +137,7 @@ def generate_summary(transcription: str, model_config: Dict[str, Any]) -> str:
 
 def install_config():
     """
-    Create a .transcribe.yaml file in the current directory and prompt the user to input API keys if not set.
+    Create a config file in the current directory and prompt the user to input API keys if not set.
     """
     config = {
         "openai": {
@@ -182,8 +184,8 @@ def install_config():
                 },
             ]
         },
-        "input_folder": "input",
-        "output_folder": "output",
+        "input_folder": DEFAULT_INPUT_FOLDER,
+        "output_folder": DEFAULT_OUTPUT_FOLDER,
     }
 
     if not OPENAI_API_KEY:
@@ -198,10 +200,15 @@ def install_config():
         os.environ["ANTHROPIC_API_KEY"] = anthropic_key
         append_to_shell_profile(f"export ANTHROPIC_API_KEY={anthropic_key}")
 
-    with open(".transcribe.yaml", "w") as f:
+    with open(DEFAULT_CONFIG_FILE, "w") as f:
         yaml.dump(config, f, sort_keys=False)
 
-    print("Configuration file '.transcribe.yaml' created successfully.")
+    print(f"Configuration file '{DEFAULT_CONFIG_FILE}' created successfully.")
+
+    os.makedirs(DEFAULT_INPUT_FOLDER, exist_ok=True)
+    os.makedirs(DEFAULT_OUTPUT_FOLDER, exist_ok=True)
+
+    print(f"Input and output folders '{DEFAULT_INPUT_FOLDER}' and '{DEFAULT_OUTPUT_FOLDER}' created successfully.")
 
 
 def append_to_shell_profile(line):
@@ -255,8 +262,7 @@ def main():
                 with open(output_file, "r", encoding="utf-8") as file:
                     transcription = file.read()
 
-            # Load configuration from .transcribe.yaml
-            with open(".transcribe.yaml", "r") as f:
+            with open(DEFAULT_CONFIG_FILE, "r") as f:
                 config = yaml.safe_load(f)
 
             openai_models = config["openai"]["models"]
