@@ -263,7 +263,12 @@ def main():
 
     for filename in os.listdir(input_folder):
         file_path = os.path.join(input_folder, filename)
+        
+        if not (filename.endswith(".mp3") or filename.endswith(".m4a")):
+            continue
+
         output_file = os.path.join(output_folder, f"{os.path.splitext(filename)[0]}.txt")
+
         try:
             if not os.path.exists(output_file):
                 print(f"Transcribing audio file: {file_path}")
