@@ -238,7 +238,7 @@ def append_to_shell_profile(line):
 
 def main():
     parser = argparse.ArgumentParser(description="Transcribe audio files and generate summaries.")
-    parser.add_argument("command", nargs="?", choices=["install"], help="Command to execute.")
+    parser.add_argument("command", nargs="?", choices=["install"], help="Install the configuration file.")
     parser.add_argument("--input", type=str, default="input", help="Path to the input folder containing audio files.")
     parser.add_argument("--output", type=str, default="output", help="Path to the output folder to save transcriptions and summaries.")
     args = parser.parse_args()
@@ -255,6 +255,12 @@ def main():
     os.makedirs(output_folder, exist_ok=True)
 
     files_transcribed = False
+
+    # Check if the transcribe config file exists
+    if not os.path.exists(DEFAULT_CONFIG_FILE):
+        print(f"Transcribe config file '{DEFAULT_CONFIG_FILE}' does not exist.")
+        print("Please run `transcribe-me install` to create the config file.")
+        return
 
     for filename in os.listdir(input_folder):
         file_path = os.path.join(input_folder, filename)
