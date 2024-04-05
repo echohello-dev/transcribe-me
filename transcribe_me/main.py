@@ -187,15 +187,19 @@ def install_config():
     }
 
     if not OPENAI_API_KEY:
+        print("Looks like you haven't set your OpenAI API key. We'll set it up for you.")
         openai_key = input("Enter your OpenAI API key: ")
+        os.environ["OPENAI_API_KEY"] = openai_key
         append_to_shell_profile(f"export OPENAI_API_KEY={openai_key}")
 
     if not ANTHROPIC_API_KEY:
+        print("Looks like you haven't set your Anthropic API key. We'll set it up for you.")
         anthropic_key = input("Enter your Anthropic API key: ")
+        os.environ["ANTHROPIC_API_KEY"] = anthropic_key
         append_to_shell_profile(f"export ANTHROPIC_API_KEY={anthropic_key}")
 
     with open(".transcribe.yaml", "w") as f:
-        yaml.dump(config, f)
+        yaml.dump(config, f, sort_keys=False)
 
     print("Configuration file '.transcribe.yaml' created successfully.")
 
