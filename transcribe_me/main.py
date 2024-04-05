@@ -139,6 +139,9 @@ def install_config():
     """
     Create a config file in the current directory and prompt the user to input API keys if not set.
     """
+    print("Welcome to the installation process for Transcribe Me.")
+    print("This will create a configuration file and input/output folders in the current directory.")
+
     config = {
         "openai": {
             "models": [
@@ -209,6 +212,9 @@ def install_config():
     os.makedirs(DEFAULT_OUTPUT_FOLDER, exist_ok=True)
 
     print(f"Input and output folders '{DEFAULT_INPUT_FOLDER}' and '{DEFAULT_OUTPUT_FOLDER}' created successfully.")
+    print("You're all set up!")
+    print()
+    print(f"Usage: simply place your audio files in the '{DEFAULT_INPUT_FOLDER}' folder and `transcribe-me` transcribe and generate summaries in '{DEFAULT_OUTPUT_FOLDER}'.")
 
 
 def append_to_shell_profile(line):
