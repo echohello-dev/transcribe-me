@@ -13,7 +13,7 @@ freeze:
 
 install:
 ifneq (, $(shell which asdf))
-	asdf install
+	asdf install python
 endif
 	python3 -m venv venv
 	$(VENV) pip install -r requirements.txt
