@@ -8,6 +8,7 @@ setup(
     description='A CLI tool to transcribe audio files using OpenAI API',
     version='0.1.0',
     packages=find_packages(),
+    package_data={'transcribe_me': ["schemas/*.yaml"]},
     entry_points={
         'console_scripts': [
             'transcribe-me = transcribe_me.main:main',
