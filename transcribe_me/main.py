@@ -112,7 +112,7 @@ def generate_summary(transcription: str, platform: str, model_config: Dict[str, 
 
     if "openai" in platform:
         openai_response = openai.chat.completions.create(
-            model="gpt-4",
+            model=model_name,
             messages=[
                 {
                     "role": "system",
