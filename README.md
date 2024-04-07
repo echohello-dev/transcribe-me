@@ -70,21 +70,6 @@ The Transcribe Me application follows a straightforward workflow:
    make install-cli
    ```
 
-```mermaid
-graph TD
-   A[Clone Repository] --> B[Install ASDF and Homebrew]
-   B --> C[Install Python and FFmpeg]
-   C --> D[Install Python Dependencies]
-   D --> E[Configure API Keys]
-   E --> F[Place Audio Files]
-   F --> G[Run Application]
-
-   A --> D
-   D --> E
-   E --> F
-   F --> G
-```
-
 ## :wrench: Usage
 
 1. Place your audio files in the `input` directory (or any other directory specified in the configuration).
@@ -104,6 +89,8 @@ graph TD
 
 The application uses a configuration file (`.transcribe.yaml`) to specify settings such as input/output directories, API keys, models, and their configurations. The configuration file is created automatically when you run the `transcribe-me install` command.
 
+> `max_tokens` is the maximum number of tokens to generate in the summary. The default is dynamic based on the model.
+
 Here is an example configuration file:
 
 ```yaml
@@ -117,7 +104,6 @@ openai:
 anthropic:
   models:
     - temperature: 0.8
-      max_tokens: 2048
       model: claude-3-sonnet-20240229
       system_prompt: Generate something creative and interesting, use Markdown, be a concise tech expert but kind to non-technical readers.
 

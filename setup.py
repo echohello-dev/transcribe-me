@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name='transcribe_me',
-    description='A tool for transcribing audio files using the OpenAI Whisper API.',
+    description='A CLI tool to transcribe audio files using OpenAI API',
     version='0.1.0',
     packages=find_packages(),
     entry_points={
@@ -11,11 +11,8 @@ setup(
         ],
     },
     install_requires=[
-        # List your project's dependencies here
         'openai',
         'anthropic',
         'pydub',
-        'tqdm',
-        # ...
     ],
 )
