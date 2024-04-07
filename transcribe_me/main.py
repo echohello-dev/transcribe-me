@@ -280,7 +280,8 @@ def main():
         if not (filename.endswith(".mp3") or filename.endswith(".m4a")):
             continue
 
-        output_file = os.path.join(output_folder, f"{os.path.splitext(filename)[0]}.txt")
+        transcription_name = os.path.splitext(filename)[0]
+        output_file = os.path.join(output_folder, f"{transcription_name}.txt")
 
         try:
             if not os.path.exists(output_file):
@@ -307,17 +308,15 @@ def main():
         for model_config in openai_models:
             openai_summary_file = os.path.join(
                 output_folder,
-                f"{os.path.splitext(filename)[0]} OpenAI Summary (Temp {model_config['temperature']} - {model_config['model']}).md",
+                f"{transcription_name} OpenAI Summary (Temp {model_config['temperature']} - {model_config['model']}).md",
             )
 
             # Skip if summary file already exists
             if os.path.exists(openai_summary_file):
                 continue
 
-            print(f"Summarizing with OpenAI (Temp {model_config['temperature']} - {model_config['model']})...")
-
+            print(f"Summarizing {transcription_name} with OpenAI (Temp {model_config['temperature']} - {model_config['model']}):")
             openai_summary = generate_summary(transcription, "openai", model_config)
-
             print(openai_summary + "\n")
 
             # Delete the summary file if it already exists
@@ -338,7 +337,9 @@ def main():
             if os.path.exists(anthropic_summary_file):
                 continue
 
+            print(f"Summarizing {transcription_name} with Anthropic (Temp {model_config['temperature']} - {model_config['model']}):")
             anthropic_summary = generate_summary(transcription, "anthropic", model_config)
+            print(openai_summary + "\n")
 
             print(f"\nAnthropic Summary (Temp {model_config['temperature']} - {model_config['model']}):")
             print(anthropic_summary)
