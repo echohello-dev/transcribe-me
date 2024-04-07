@@ -2,12 +2,13 @@ import argparse
 import os
 from glob import glob
 from typing import Dict, Any
-
 import anthropic
 import openai
 from pydub import AudioSegment
 from tqdm import tqdm
 import yaml
+from colorama import init, Fore, Style
+from halo import Halo
 
 OPENAI_API_KEY = os.environ.get("OPENAI_API_KEY")
 ANTHROPIC_API_KEY = os.environ.get("ANTHROPIC_API_KEY")
@@ -37,10 +38,13 @@ def split_audio(file_path: str, interval_minutes: int = 10) -> list[str]:
     chunks = [audio[i: i + interval_ms] for i in range(0, len(audio), interval_ms)]
 
     chunk_names = []
-    for i, chunk in enumerate(tqdm(chunks, desc="Splitting audio", unit="chunk"), start=1):
+    spinner = Halo(text='Splitting audio', spinner='dots')
+    spinner.start()
+    for i, chunk in enumerate(chunks, start=1):
         chunk_name = f"{os.path.splitext(file_path)[0]}_part{i}.mp3"
         chunk.export(chunk_name, format="mp3")
         chunk_names.append(chunk_name)
+    spinner.succeed(f'Audio split into {len(chunk_names)} chunks')
 
     return chunk_names
 
@@ -60,9 +64,8 @@ def transcribe_chunk(file_path: str) -> str:
             response = openai.audio.transcriptions.create(model="whisper-1", file=audio_file)
             return response.text
         except Exception as e:
-            print(f"An error occurred while transcribing {file_path}: {e}")
+            print(f"{Fore.RED}An error occurred while transcribing {file_path}: {e}")
             raise e
-
 
 def transcribe_audio(file_path: str, output_path: str) -> None:
     """
@@ -75,12 +78,13 @@ def transcribe_audio(file_path: str, output_path: str) -> None:
     chunk_files = split_audio(file_path)
     full_transcription = ""
 
-    for chunk_file in tqdm(chunk_files, desc="Transcribing", unit="chunk"):
+    progress_bar = tqdm(chunk_files, desc="Transcribing", unit="chunk", bar_format="{l_bar}{bar}| {n_fmt}/{total_fmt}")
+    for chunk_file in progress_bar:
         try:
             transcription = transcribe_chunk(chunk_file)
             full_transcription += transcription + " "
         except Exception as e:
-            print(f"An error occurred while transcribing chunk {chunk_file}: {e}")
+            print(f"{Fore.RED}An error occurred while transcribing chunk {chunk_file}: {e}")
         finally:
             os.remove(chunk_file)
 
@@ -138,8 +142,8 @@ def install_config():
     """
     Create a config file in the current directory and prompt the user to input API keys if not set.
     """
-    print("Welcome to the installation process for Transcribe Me.")
-    print("This will create a configuration file and input/output folders in the current directory.")
+    print(f"{Fore.GREEN}Welcome to the installation process for Transcribe Me.")
+    print(f"{Fore.YELLOW}This will create a configuration file and input/output folders in the current directory.")
 
     config = {
         "openai": {
@@ -191,29 +195,29 @@ def install_config():
     }
 
     if not OPENAI_API_KEY:
-        print("Looks like you haven't set your OpenAI API key. We'll set it up for you.")
-        openai_key = input("Enter your OpenAI API key: ")
+        print(f"{Fore.YELLOW}Looks like you haven't set your OpenAI API key. We'll set it up for you.")
+        openai_key = input(f"{Fore.CYAN}Enter your OpenAI API key: ")
         os.environ["OPENAI_API_KEY"] = openai_key
         append_to_shell_profile(f"export OPENAI_API_KEY={openai_key}")
 
     if not ANTHROPIC_API_KEY:
-        print("Looks like you haven't set your Anthropic API key. We'll set it up for you.")
-        anthropic_key = input("Enter your Anthropic API key: ")
+        print(f"{Fore.YELLOW}Looks like you haven't set your Anthropic API key. We'll set it up for you.")
+        anthropic_key = input(f"{Fore.CYAN}Enter your Anthropic API key: ")
         os.environ["ANTHROPIC_API_KEY"] = anthropic_key
         append_to_shell_profile(f"export ANTHROPIC_API_KEY={anthropic_key}")
 
     with open(DEFAULT_CONFIG_FILE, "w") as f:
         yaml.dump(config, f, sort_keys=False)
 
-    print(f"Configuration file '{DEFAULT_CONFIG_FILE}' created successfully.")
+    print(f"{Fore.GREEN}Configuration file '{DEFAULT_CONFIG_FILE}' created successfully.")
 
     os.makedirs(DEFAULT_INPUT_FOLDER, exist_ok=True)
     os.makedirs(DEFAULT_OUTPUT_FOLDER, exist_ok=True)
 
-    print(f"Input and output folders '{DEFAULT_INPUT_FOLDER}' and '{DEFAULT_OUTPUT_FOLDER}' created successfully.")
-    print("You're all set up!")
+    print(f"{Fore.GREEN}Input and output folders '{DEFAULT_INPUT_FOLDER}' and '{DEFAULT_OUTPUT_FOLDER}' created successfully.")
+    print(f"{Fore.GREEN}You're all set up!")
     print()
-    print(f"Usage: simply place your audio files in the '{DEFAULT_INPUT_FOLDER}' folder and `transcribe-me` transcribe and generate summaries in '{DEFAULT_OUTPUT_FOLDER}'.")
+    print(f"{Fore.YELLOW}Usage: simply place your audio files in the '{DEFAULT_INPUT_FOLDER}' folder and `transcribe-me` transcribe and generate summaries in '{DEFAULT_OUTPUT_FOLDER}'.")
 
 
 def append_to_shell_profile(line):
@@ -232,7 +236,7 @@ def append_to_shell_profile(line):
     with open(profile_file, "a") as f:
         f.write(f"\n{line}\n")
 
-    print(f"API key added to {profile_file}")
+    print(f"{Fore.GREEN}API key added to {profile_file}")
 
 def read_transcription(output_file: str) -> str:
     """
@@ -270,10 +274,12 @@ def main():
 
     # Check if the transcribe config file exists
     if not os.path.exists(DEFAULT_CONFIG_FILE):
-        print(f"Transcribe config file '{DEFAULT_CONFIG_FILE}' does not exist.")
-        print("Please run `transcribe-me install` to create the config file.")
+        print(f"{Fore.RED}Transcribe config file '{DEFAULT_CONFIG_FILE}' does not exist.")
+        print(f"{Fore.YELLOW}Please run `transcribe-me install` to create the config file.")
         return
 
+    spinner = Halo(text='Processing audio files', spinner='dots')
+    spinner.start()
     for filename in os.listdir(input_folder):
         file_path = os.path.join(input_folder, filename)
         
@@ -285,7 +291,7 @@ def main():
 
         try:
             if not os.path.exists(output_file):
-                print(f"Transcribing audio file: {file_path}")
+                print(f"{Fore.BLUE}Transcribing audio file: {file_path}")
                 transcribe_audio(file_path, output_file)
                 files_transcribed = True
                 continue
@@ -293,7 +299,7 @@ def main():
             with open(DEFAULT_CONFIG_FILE, "r") as f:
                 config = yaml.safe_load(f)
         except Exception as e:
-            print(f"An error occurred while processing {file_path}: {e}")
+            print(f"{Fore.RED}An error occurred while processing {file_path}: {e}")
             raise e
         finally:
             # Delete the _part* MP3 files
@@ -315,7 +321,7 @@ def main():
             if os.path.exists(openai_summary_file):
                 continue
 
-            print(f"Summarizing {transcription_name} with OpenAI (Temp {model_config['temperature']} - {model_config['model']}):")
+            print(f"{Fore.BLUE}Summarizing {transcription_name} with OpenAI (Temp {model_config['temperature']} - {model_config['model']}):")
             openai_summary = generate_summary(transcription, "openai", model_config)
             print(openai_summary + "\n")
 
@@ -337,11 +343,11 @@ def main():
             if os.path.exists(anthropic_summary_file):
                 continue
 
-            print(f"Summarizing {transcription_name} with Anthropic (Temp {model_config['temperature']} - {model_config['model']}):")
+            print(f"{Fore.BLUE}Summarizing {transcription_name} with Anthropic (Temp {model_config['temperature']} - {model_config['model']}):")
             anthropic_summary = generate_summary(transcription, "anthropic", model_config)
             print(openai_summary + "\n")
 
-            print(f"\nAnthropic Summary (Temp {model_config['temperature']} - {model_config['model']}):")
+            print(f"\n{Fore.MAGENTA}Anthropic Summary (Temp {model_config['temperature']} - {model_config['model']}):")
             print(anthropic_summary)
 
             # Delete the summary file if it already exists
@@ -351,9 +357,10 @@ def main():
             # Write the summary to the file
             with open(anthropic_summary_file, "w", encoding="utf-8") as file:
                 file.write(anthropic_summary)
+    spinner.succeed('Audio processing completed')
 
     if not files_transcribed:
-        print("Warning: No audio files were transcribed.")
+        print(f"{Fore.YELLOW}Warning: No audio files were transcribed.")
 
 
 if __name__ == "__main__":
