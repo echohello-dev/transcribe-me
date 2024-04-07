@@ -291,57 +291,6 @@ def main():
 
             with open(DEFAULT_CONFIG_FILE, "r") as f:
                 config = yaml.safe_load(f)
-
-            openai_models = config["openai"]["models"]
-            anthropic_models = config["anthropic"]["models"]
-            transcription = read_transcription(output_file)
-
-            # Save summaries in markdown files
-            for model_config in openai_models:
-                openai_summary_file = os.path.join(
-                    output_folder,
-                    f"{os.path.splitext(filename)[0]} OpenAI Summary (Temp {model_config['temperature']} - {model_config['model']}).md",
-                )
-
-                # Skip if summary file already exists
-                if os.path.exists(openai_summary_file):
-                    continue
-
-                openai_summary = generate_summary(transcription, "openai", model_config)
-
-                print(f"OpenAI Summary (Temp {model_config['temperature']} - {model_config['model']}):")
-                print(openai_summary)
-
-                # Delete the summary file if it already exists
-                if os.path.exists(openai_summary_file):
-                    os.remove(openai_summary_file)
-
-                # Write the summary to the file
-                with open(openai_summary_file, "w", encoding="utf-8") as file:
-                    file.write(openai_summary)
-
-            for model_config in anthropic_models:
-                anthropic_summary_file = os.path.join(
-                    output_folder,
-                    f"{os.path.splitext(filename)[0]} Anthropic Summary (Temp {model_config['temperature']} - {model_config['model']}).md",
-                )
-
-                # Skip if summary file already exists
-                if os.path.exists(anthropic_summary_file):
-                    continue
-
-                anthropic_summary = generate_summary(transcription, "anthropic", model_config)
-
-                print(f"\nAnthropic Summary (Temp {model_config['temperature']} - {model_config['model']}):")
-                print(anthropic_summary)
-
-                # Delete the summary file if it already exists
-                if os.path.exists(anthropic_summary_file):
-                    os.remove(anthropic_summary_file)
-
-                # Write the summary to the file
-                with open(anthropic_summary_file, "w", encoding="utf-8") as file:
-                    file.write(anthropic_summary)
         except Exception as e:
             print(f"An error occurred while processing {file_path}: {e}")
             raise e
@@ -349,6 +298,58 @@ def main():
             # Delete the _part* MP3 files
             for file in glob(f"{file_path.partition('.')[0]}_part*.mp3"):
                 os.remove(file)
+
+        openai_models = config["openai"]["models"]
+        anthropic_models = config["anthropic"]["models"]
+        transcription = read_transcription(output_file)
+
+        # Save summaries in markdown files
+        for model_config in openai_models:
+            openai_summary_file = os.path.join(
+                output_folder,
+                f"{os.path.splitext(filename)[0]} OpenAI Summary (Temp {model_config['temperature']} - {model_config['model']}).md",
+            )
+
+            # Skip if summary file already exists
+            if os.path.exists(openai_summary_file):
+                continue
+
+            print(f"Summarizing with OpenAI (Temp {model_config['temperature']} - {model_config['model']})...")
+
+            openai_summary = generate_summary(transcription, "openai", model_config)
+
+            print(openai_summary + "\n")
+
+            # Delete the summary file if it already exists
+            if os.path.exists(openai_summary_file):
+                os.remove(openai_summary_file)
+
+            # Write the summary to the file
+            with open(openai_summary_file, "w", encoding="utf-8") as file:
+                file.write(openai_summary)
+
+        for model_config in anthropic_models:
+            anthropic_summary_file = os.path.join(
+                output_folder,
+                f"{os.path.splitext(filename)[0]} Anthropic Summary (Temp {model_config['temperature']} - {model_config['model']}).md",
+            )
+
+            # Skip if summary file already exists
+            if os.path.exists(anthropic_summary_file):
+                continue
+
+            anthropic_summary = generate_summary(transcription, "anthropic", model_config)
+
+            print(f"\nAnthropic Summary (Temp {model_config['temperature']} - {model_config['model']}):")
+            print(anthropic_summary)
+
+            # Delete the summary file if it already exists
+            if os.path.exists(anthropic_summary_file):
+                os.remove(anthropic_summary_file)
+
+            # Write the summary to the file
+            with open(anthropic_summary_file, "w", encoding="utf-8") as file:
+                file.write(anthropic_summary)
 
     if not files_transcribed:
         print("Warning: No audio files were transcribed.")
