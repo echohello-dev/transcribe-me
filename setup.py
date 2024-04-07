@@ -1,5 +1,8 @@
 from setuptools import setup, find_packages
 
+with open('requirements.txt') as f:
+    requirements = f.read().splitlines()
+
 setup(
     name='transcribe_me',
     description='A CLI tool to transcribe audio files using OpenAI API',
@@ -10,9 +13,5 @@ setup(
             'transcribe-me = transcribe_me.main:main',
         ],
     },
-    install_requires=[
-        'openai',
-        'anthropic',
-        'pydub',
-    ],
+    install_requires=requirements,
 )
