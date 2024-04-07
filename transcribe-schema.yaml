@@ -1,0 +1,12 @@
+openai:
+  models: list(include('model'), min=1)
+anthropic:
+  models: list(include('model'), min=1)
+input_folder: str()
+output_folder: str()
+---
+model:
+  temperature: num(min=0, max=1)
+  max_tokens: int(min=1)
+  model: str()
+  system_prompt: str()
