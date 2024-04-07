@@ -108,7 +108,7 @@ def generate_summary(transcription: str, platform: str, model_config: Dict[str, 
     system_prompt = model_config["system_prompt"]
 
     input_tokens = len(transcription.split())
-    max_tokens = min(int(0.3 * input_tokens), 3000)
+    max_tokens = model_config.get("max_tokens", min(int(0.3 * input_tokens), 3000))
 
     if "openai" in platform:
         openai_response = openai.chat.completions.create(
