@@ -99,7 +99,7 @@ def validate_config() -> None:
     Raises:
         yamale.YamaleError: If the config file is invalid.
     """
-    schema_file = 'transcribe_schema.yaml'
+    schema_file = os.path.join(os.path.dirname(__file__), "schemas/transcribe.yaml")
     config_file = DEFAULT_CONFIG_FILE
 
     try:
