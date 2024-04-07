@@ -246,7 +246,7 @@ def read_transcription(output_file: str) -> str:
     """
     with open(output_file, "r", encoding="utf-8") as file:
         transcription = file.read()
-    return transcription
+        return transcription
 
 def main():
     parser = argparse.ArgumentParser(description="Transcribe audio files and generate summaries.")
