@@ -373,7 +373,7 @@ def main():
 
             print(f"{Fore.BLUE}Summarizing {transcription_name} with Anthropic (Temp {model_config['temperature']} - {model_config['model']}):\n")
             anthropic_summary = generate_summary(transcription, "anthropic", model_config)
-            print(openai_summary + "\n")
+            print(anthropic_summary + "\n")
 
             print(f"\n{Fore.MAGENTA}Anthropic Summary (Temp {model_config['temperature']} - {model_config['model']}):")
             print(anthropic_summary)
