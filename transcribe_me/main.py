@@ -305,6 +305,7 @@ def main():
 
     spinner = Halo(text='Processing audio files', spinner='dots')
     spinner.start()
+
     for filename in os.listdir(input_folder):
         file_path = os.path.join(input_folder, filename)
         
@@ -331,6 +332,8 @@ def main():
             for file in glob(f"{file_path.partition('.')[0]}_part*.mp3"):
                 os.remove(file)
 
+    for filename in os.listdir(output_file):
+        output_file = os.path.join(output_folder, f"{transcription_name}.txt")
         openai_models = config["openai"]["models"]
         anthropic_models = config["anthropic"]["models"]
         transcription = read_transcription(output_file)
@@ -382,6 +385,7 @@ def main():
             # Write the summary to the file
             with open(anthropic_summary_file, "w", encoding="utf-8") as file:
                 file.write(anthropic_summary)
+
     spinner.succeed('Audio processing completed')
 
     if not files_transcribed:
