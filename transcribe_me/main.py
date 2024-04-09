@@ -62,7 +62,7 @@ def transcribe_chunk(file_path: str) -> str:
     """
     with open(file_path, "rb") as audio_file:
         try:
-            response = openai.audio.transcriptions.create(model="whisper-1", file=audio_file)
+            response = openai.audio.transcriptions.create(language="en", model="whisper-1", file=audio_file)
             return response.text
         except Exception as e:
             print(f"{Fore.RED}An error occurred while transcribing {file_path}: {e}")
