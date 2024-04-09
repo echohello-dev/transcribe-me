@@ -317,7 +317,7 @@ def main():
 
         try:
             if not os.path.exists(output_file):
-                print(f"{Fore.BLUE}Transcribing audio file: {file_path}")
+                print(f"{Fore.BLUE}Transcribing audio file: {file_path}\n")
                 transcribe_audio(file_path, output_file)
                 files_transcribed = True
                 continue
@@ -332,7 +332,7 @@ def main():
             for file in glob(f"{file_path.partition('.')[0]}_part*.mp3"):
                 os.remove(file)
 
-    for filename in os.listdir(output_file):
+    for filename in os.listdir(output_folder):
         output_file = os.path.join(output_folder, f"{transcription_name}.txt")
         openai_models = config["openai"]["models"]
         anthropic_models = config["anthropic"]["models"]
@@ -349,7 +349,7 @@ def main():
             if os.path.exists(openai_summary_file):
                 continue
 
-            print(f"{Fore.BLUE}Summarizing {transcription_name} with OpenAI (Temp {model_config['temperature']} - {model_config['model']}):")
+            print(f"{Fore.BLUE}Summarizing {transcription_name} with OpenAI (Temp {model_config['temperature']} - {model_config['model']}):\n")
             openai_summary = generate_summary(transcription, "openai", model_config)
             print(openai_summary + "\n")
 
@@ -371,7 +371,7 @@ def main():
             if os.path.exists(anthropic_summary_file):
                 continue
 
-            print(f"{Fore.BLUE}Summarizing {transcription_name} with Anthropic (Temp {model_config['temperature']} - {model_config['model']}):")
+            print(f"{Fore.BLUE}Summarizing {transcription_name} with Anthropic (Temp {model_config['temperature']} - {model_config['model']}):\n")
             anthropic_summary = generate_summary(transcription, "anthropic", model_config)
             print(openai_summary + "\n")
 
