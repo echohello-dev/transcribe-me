@@ -333,6 +333,9 @@ def main():
                 os.remove(file)
 
     for filename in os.listdir(output_folder):
+        if not filename.endswith(".md"):
+            continue
+
         output_file = os.path.join(output_folder, f"{transcription_name}.txt")
         openai_models = config["openai"]["models"]
         anthropic_models = config["anthropic"]["models"]
