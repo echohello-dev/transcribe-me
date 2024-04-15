@@ -333,7 +333,7 @@ def main():
                 os.remove(file)
 
     for filename in os.listdir(output_folder):
-        if not filename.endswith(".md"):
+        if filename.endswith(".md"):
             continue
 
         output_file = os.path.join(output_folder, f"{transcription_name}.txt")
