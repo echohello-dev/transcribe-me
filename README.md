@@ -72,18 +72,26 @@ The Transcribe Me application follows a straightforward workflow:
 
 ## :wrench: Usage
 
-1. Place your audio files in the `input` directory (or any other directory specified in the configuration).
-2. Run the application:
+1. Bootstrap your current directory with the configuration file:
+
+   ```bash
+   transcribe-me install
+   ```
+
+2. Place your audio files in the `input` directory (or any other directory specified in the configuration).
+3. Run the application:
 
    ```bash
    transcribe-me
    ```
 
-   ```bash
-   make transcribe
-   ```
-
    The application will transcribe each audio file in the input directory and save the transcriptions to the output directory. It will also generate summaries of the transcriptions using the configured models and save them to the output directory.
+
+4. (Optional) You can archive the input directory to keep track of the processed audio files:
+
+   ```bash
+   transcribe-me archive
+   ```
 
 ## :gear: Configuration
 
