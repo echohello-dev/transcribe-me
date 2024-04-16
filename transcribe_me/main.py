@@ -10,6 +10,8 @@ import yaml
 from colorama import init, Fore, Style
 from halo import Halo
 import yamale
+from tenacity import retry, wait_exponential, stop_after_attempt
+import time
 
 OPENAI_API_KEY = os.environ.get("OPENAI_API_KEY")
 ANTHROPIC_API_KEY = os.environ.get("ANTHROPIC_API_KEY")
@@ -50,20 +52,19 @@ def split_audio(file_path: str, interval_minutes: int = 10) -> list[str]:
     return chunk_names
 
 
+@retry(wait=wait_exponential(multiplier=1, min=4, max=60), stop=stop_after_attempt(5))
 def transcribe_chunk(file_path: str) -> str:
     """
     Transcribe an audio chunk using the OpenAI Whisper API.
-
-    Args:
-        file_path (str): Path to the audio chunk to transcribe.
-
-    Returns:
-        str: Transcribed text.
+    Retry with exponential backoff in case of rate limiting.
     """
     with open(file_path, "rb") as audio_file:
         try:
             response = openai.audio.transcriptions.create(language="en", model="whisper-1", file=audio_file)
             return response.text
+        except openai.error.RateLimitError as e:
+            print(f"{Fore.YELLOW}Rate limit reached, retrying in a bit...")
+            raise e
         except Exception as e:
             print(f"{Fore.RED}An error occurred while transcribing {file_path}: {e}")
             raise e
@@ -92,16 +93,11 @@ def transcribe_audio(file_path: str, output_path: str) -> None:
     with open(output_path, "w", encoding="utf-8") as file:
         file.write(full_transcription)
 
+@retry(wait=wait_exponential(multiplier=1, min=4, max=60), stop=stop_after_attempt(5))
 def generate_summary(transcription: str, platform: str, model_config: Dict[str, Any]) -> str:
     """
     Generate a summary from the transcription using the specified model configuration.
-
-    Args:
-        transcription (str): The full transcription text.
-        model_config (Dict[str, Any]): The configuration for the model to be used for summary generation.
-
-    Returns:
-        str: The generated summary.
+    Retry with exponential backoff in case of rate limiting.
     """
     temperature = model_config["temperature"]
     model_name = model_config["model"]
@@ -111,29 +107,37 @@ def generate_summary(transcription: str, platform: str, model_config: Dict[str, 
     max_tokens = model_config.get("max_tokens", min(int(0.3 * input_tokens), 3000))
 
     if "openai" in platform:
-        openai_response = openai.chat.completions.create(
-            model=model_name,
-            messages=[
-                {
-                    "role": "system",
-                    "content": system_prompt,
-                },
-                {"role": "user", "content": transcription},
-            ],
-            temperature=temperature,
-            max_tokens=max_tokens,
-        )
-        summary = openai_response.choices[0].message.content.strip()
+        try:
+            openai_response = openai.chat.completions.create(
+                model=model_name,
+                messages=[
+                    {
+                        "role": "system",
+                        "content": system_prompt,
+                    },
+                    {"role": "user", "content": transcription},
+                ],
+                temperature=temperature,
+                max_tokens=max_tokens,
+            )
+            summary = openai_response.choices[0].message.content.strip()
+        except openai.error.RateLimitError as e:
+            print(f"{Fore.YELLOW}Rate limit reached, retrying in a bit...")
+            raise e
     elif "anthropic" in platform:
         anthropic_client = anthropic.Anthropic(api_key=ANTHROPIC_API_KEY)
-        anthropic_response = anthropic_client.messages.create(
-            model=model_name,
-            max_tokens=max_tokens,
-            temperature=temperature,
-            system=system_prompt,
-            messages=[{"role": "user", "content": transcription}],
-        )
-        summary = anthropic_response.content[0].text
+        try:
+            anthropic_response = anthropic_client.messages.create(
+                model=model_name,
+                max_tokens=max_tokens,
+                temperature=temperature,
+                system=system_prompt,
+                messages=[{"role": "user", "content": transcription}],
+            )
+            summary = anthropic_response.content[0].text
+        except anthropic.error.RateLimitError as e:
+            print(f"{Fore.YELLOW}Rate limit reached, retrying in a bit...")
+            raise e
 
     return summary
 
