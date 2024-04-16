@@ -11,7 +11,7 @@ endif
 freeze:
 	$(VENV) pip freeze > requirements.txt
 
-install:
+install: check-ffmpeg
 ifneq (, $(shell which asdf))
 	asdf install python
 endif
@@ -24,8 +24,11 @@ install-cli: check-ffmpeg
 test: install
 	$(VENV) python -m unittest discover -s tests
 
-transcribe: install check-ffmpeg
+transcribe: install
 	$(VENV) python transcribe_me/main.py
 
-transcribe-install: install check-ffmpeg
+transcribe-archive: install
+	$(VENV) python transcribe_me/main.py archive
+
+transcribe-install: install
 	$(VENV) python transcribe_me/main.py install

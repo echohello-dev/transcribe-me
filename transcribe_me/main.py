@@ -11,7 +11,7 @@ from colorama import init, Fore, Style
 from halo import Halo
 import yamale
 from tenacity import retry, wait_exponential, stop_after_attempt
-import time
+import shutil
 
 OPENAI_API_KEY = os.environ.get("OPENAI_API_KEY")
 ANTHROPIC_API_KEY = os.environ.get("ANTHROPIC_API_KEY")
@@ -19,6 +19,33 @@ DEFAULT_OUTPUT_FOLDER = "output"
 DEFAULT_INPUT_FOLDER = "input"
 DEFAULT_CONFIG_FILE = ".transcribe.yaml"
 
+def archive_files(input_folder, output_folder):
+    """
+    Move input and output files to an archive folder.
+
+    Args:
+        input_folder (str): Path to the input folder.
+        output_folder (str): Path to the output folder.
+    """
+    archive_folder = "archive"
+    if not os.path.exists(archive_folder):
+        os.makedirs(archive_folder)
+
+    for file_path in glob(os.path.join(input_folder, "*")):
+        file_name = os.path.basename(file_path)
+        dest_path = os.path.join(archive_folder, "input", file_name)
+        os.makedirs(os.path.dirname(dest_path), exist_ok=True)
+        shutil.move(file_path, dest_path)
+        print(f"{Fore.GREEN}Moved {file_path} to {dest_path}")
+
+    for file_path in glob(os.path.join(output_folder, "*")):
+        file_name = os.path.basename(file_path)
+        dest_path = os.path.join(archive_folder, "output", file_name)
+        os.makedirs(os.path.dirname(dest_path), exist_ok=True)
+        shutil.move(file_path, dest_path)
+        print(f"{Fore.GREEN}Moved {file_path} to {dest_path}")
+
+    print(f"{Fore.GREEN}All input and output files have been moved to {archive_folder}")
 
 def split_audio(file_path: str, interval_minutes: int = 10) -> list[str]:
     """
@@ -285,13 +312,17 @@ def load_config() -> Dict[str, Any]:
 
 def main():
     parser = argparse.ArgumentParser(description="Transcribe audio files and generate summaries.")
-    parser.add_argument("command", nargs="?", choices=["install"], help="Install the configuration file.")
+    parser.add_argument("command", nargs="?", choices=["install", "archive"], help="Install the configuration file or archive files.")
     parser.add_argument("--input", type=str, default="input", help="Path to the input folder containing audio files.")
     parser.add_argument("--output", type=str, default="output", help="Path to the output folder to save transcriptions and summaries.")
     args = parser.parse_args()
 
     if args.command == "install":
         install_config()
+        return
+    
+    if args.command == "archive":
+        archive_files(args.input, args.output)
         return
     
     config = load_config()
