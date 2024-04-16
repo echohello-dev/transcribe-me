@@ -92,29 +92,6 @@ def transcribe_audio(file_path: str, output_path: str) -> None:
     with open(output_path, "w", encoding="utf-8") as file:
         file.write(full_transcription)
 
-def validate_config() -> None:
-    """
-    Validate the config file using the specified schema.
-
-    Raises:
-        yamale.YamaleError: If the config file is invalid.
-    """
-    schema_file = os.path.join(os.path.dirname(__file__), "schemas/transcribe.yaml")
-    config_file = DEFAULT_CONFIG_FILE
-
-    try:
-        schema = yamale.make_schema(schema_file)
-        data = yamale.make_data(config_file)
-        yamale.validate(schema, data)
-        print(f"{Fore.GREEN}Config validation successful!")
-    except yamale.YamaleError as e:
-        print(f"{Fore.RED}Config validation failed:")
-        for result in e.results:
-            print(f"{Fore.RED}Error validating data '{result.data}' with '{result.schema}':")
-            for error in result.errors:
-                print(f"{Fore.RED}\t{error}")
-        exit(1)
-
 def generate_summary(transcription: str, platform: str, model_config: Dict[str, Any]) -> str:
     """
     Generate a summary from the transcription using the specified model configuration.
@@ -275,6 +252,33 @@ def read_transcription(output_file: str) -> str:
         transcription = file.read()
         return transcription
 
+def load_config() -> Dict[str, Any]:
+    """
+    Load the configuration from the default config file.
+
+    Returns:
+        dict: The loaded configuration.
+    """
+    schema_file = os.path.join(os.path.dirname(__file__), "schemas/transcribe.yaml")
+    config_file = DEFAULT_CONFIG_FILE
+
+    try:
+        schema = yamale.make_schema(schema_file)
+        data = yamale.make_data(config_file)
+        yamale.validate(schema, data)
+        print(f"{Fore.GREEN}Config validation successful!")
+    except yamale.YamaleError as e:
+        print(f"{Fore.RED}Config validation failed:")
+        for result in e.results:
+            print(f"{Fore.RED}Error validating data '{result.data}' with '{result.schema}':")
+            for error in result.errors:
+                print(f"{Fore.RED}\t{error}")
+        exit(1)
+
+    with open(config_file, "r") as f:
+        config = yaml.safe_load(f)
+    return config
+
 def main():
     parser = argparse.ArgumentParser(description="Transcribe audio files and generate summaries.")
     parser.add_argument("command", nargs="?", choices=["install"], help="Install the configuration file.")
@@ -286,7 +290,7 @@ def main():
         install_config()
         return
     
-    validate_config()
+    config = load_config()
 
     input_folder = args.input
     output_folder = args.output
@@ -321,9 +325,6 @@ def main():
                 transcribe_audio(file_path, output_file)
                 files_transcribed = True
                 continue
-
-            with open(DEFAULT_CONFIG_FILE, "r") as f:
-                config = yaml.safe_load(f)
         except Exception as e:
             print(f"{Fore.RED}An error occurred while processing {file_path}: {e}")
             raise e
