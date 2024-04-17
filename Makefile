@@ -45,6 +45,9 @@ bump-minor:
 bump-patch:
 	$(VENV) python -m commitizen bump --increment patch
 
+gh-bump:
+	gh workflow run version.yaml
+
 publish: build
 ifdef DRY_RUN
 	$(VENV) python -m twine upload --repository testpypi dist/*
