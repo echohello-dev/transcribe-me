@@ -34,6 +34,7 @@ packages = ["transcribe_me"]
 
 [tool.commitizen]
 version = "0.3.1"
+tag_format = "v$major.$minor.$patch$prerelease"
 update_changelog_on_bump = true
 version_files = ["pyproject.toml:^version"]
 version_scheme = "semver"
