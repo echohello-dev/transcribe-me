@@ -49,6 +49,7 @@ gh-bump:
 	gh workflow run version.yaml
 
 publish: build
+	rm -rdf dist
 ifdef DRY_RUN
 	$(VENV) python -m twine upload --repository testpypi dist/*
 else
