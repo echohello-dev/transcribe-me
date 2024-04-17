@@ -33,6 +33,9 @@ test: install
 build: install
 	$(VENV) python -m build
 
+bump:
+	$(VENV) python -m commitizen bump
+
 publish: build
 ifdef DRY_RUN
 	$(VENV) python -m twine upload --repository testpypi dist/*
