@@ -17,7 +17,7 @@ endif
 freeze:
 	$(VENV) pip freeze > requirements.txt
 
-install: check-ffmpeg
+install:
 ifneq (, $(shell which asdf))
 	asdf install python
 endif
