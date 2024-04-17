@@ -4,7 +4,7 @@ packages = ["transcribe_me"]
 [tool.commitizen]
 version = "0.1.0"
 update_changelog_on_bump = true
-version_files = ["transcribe_me/__version__.py", "pyproject.toml"]
+version_files = ["pyproject.toml"]
 version_scheme = "semver"
 
 [project.scripts]
