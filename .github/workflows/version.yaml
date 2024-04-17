@@ -1,0 +1,16 @@
+name: Version
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    env:
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+    steps:
+      - uses: actions/checkout@v4
+      - uses: asdf-vm/actions/install@v3
+      - run: make bump
