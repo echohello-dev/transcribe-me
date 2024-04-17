@@ -6,6 +6,7 @@ version = "0.1.0"
 update_changelog_on_bump = true
 version_files = ["pyproject.toml"]
 version_scheme = "semver"
+post_bump_hooks = ["python release.py"]
 
 [project.scripts]
 transcribe-me = "transcribe_me.main:main"

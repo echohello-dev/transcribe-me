@@ -34,7 +34,11 @@ build: install
 	$(VENV) python -m build
 
 publish: build
+ifdef DRY_RUN
+	$(VENV) python -m twine upload --repository testpypi dist/*
+else
 	$(VENV) python -m twine upload dist/*
+endif
 
 transcribe: install
 	$(VENV) python transcribe_me/main.py
