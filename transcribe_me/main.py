@@ -369,10 +369,11 @@ def main():
                 os.remove(file)
 
     for filename in os.listdir(output_folder):
-        if filename.endswith(".md"):
+        if not filename.endswith(".txt"):
             continue
 
-        output_file = os.path.join(output_folder, f"{transcription_name}.txt")
+        transcription_name = os.path.splitext(filename)[0]
+        output_file = os.path.join(output_folder, filename)
         openai_models = config["openai"]["models"]
         anthropic_models = config["anthropic"]["models"]
         transcription = read_transcription(output_file)
@@ -403,7 +404,7 @@ def main():
         for model_config in anthropic_models:
             anthropic_summary_file = os.path.join(
                 output_folder,
-                f"{os.path.splitext(filename)[0]} Anthropic Summary (Temp {model_config['temperature']} - {model_config['model']}).md",
+                f"{transcription_name} Anthropic Summary (Temp {model_config['temperature']} - {model_config['model']}).md",
             )
 
             # Skip if summary file already exists
