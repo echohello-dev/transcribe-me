@@ -24,8 +24,11 @@ install-cli: check-ffmpeg
 test: install
 	$(VENV) python -m unittest discover -s tests
 
-publish: install
-	$(VENV) python -m pip install --upgrade build twine
+build: install
+	$(VENV) python -m build
+
+publish: build
+	$(VENV) python -m twine upload dist/*
 
 transcribe: install
 	$(VENV) python transcribe_me/main.py

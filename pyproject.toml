@@ -1,3 +1,6 @@
+[tool.setuptools]
+packages = ["transcribe_me"]
+
 [project]
 name = "transcribe-me"
 version = "0.1.0"
