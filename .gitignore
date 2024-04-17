@@ -3,6 +3,8 @@ venv
 build
 __pycache__
 .DS_Store
+input/
+output/
 archive/
 dist/
 .env
