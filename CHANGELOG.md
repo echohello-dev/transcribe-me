@@ -1,3 +1,9 @@
+## 0.3.1 (2024-04-17)
+
+### Feat
+
+- Update `get_changelog` function to include `cz version -p` command
+
 ## 0.3.0 (2024-04-17)
 
 ## 0.2.0 (2024-04-17)
