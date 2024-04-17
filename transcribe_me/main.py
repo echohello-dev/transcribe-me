@@ -12,6 +12,7 @@ from halo import Halo
 import yamale
 from tenacity import retry, wait_exponential, stop_after_attempt
 import shutil
+import datetime
 
 OPENAI_API_KEY = os.environ.get("OPENAI_API_KEY")
 ANTHROPIC_API_KEY = os.environ.get("ANTHROPIC_API_KEY")
@@ -19,9 +20,10 @@ DEFAULT_OUTPUT_FOLDER = "output"
 DEFAULT_INPUT_FOLDER = "input"
 DEFAULT_CONFIG_FILE = ".transcribe.yaml"
 
+
 def archive_files(input_folder, output_folder):
     """
-    Move input and output files to an archive folder.
+    Move input and output files to a timestamped folder inside the archive folder.
 
     Args:
         input_folder (str): Path to the input folder.
@@ -31,21 +33,28 @@ def archive_files(input_folder, output_folder):
     if not os.path.exists(archive_folder):
         os.makedirs(archive_folder)
 
+    timestamp = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
+    timestamped_folder = os.path.join(archive_folder, timestamp)
+    os.makedirs(timestamped_folder)
+
+    input_dest = os.path.join(timestamped_folder, "input")
+    output_dest = os.path.join(timestamped_folder, "output")
+    os.makedirs(input_dest, exist_ok=True)
+    os.makedirs(output_dest, exist_ok=True)
+
     for file_path in glob(os.path.join(input_folder, "*")):
         file_name = os.path.basename(file_path)
-        dest_path = os.path.join(archive_folder, "input", file_name)
-        os.makedirs(os.path.dirname(dest_path), exist_ok=True)
+        dest_path = os.path.join(input_dest, file_name)
         shutil.move(file_path, dest_path)
         print(f"{Fore.GREEN}Moved {file_path} to {dest_path}")
 
     for file_path in glob(os.path.join(output_folder, "*")):
         file_name = os.path.basename(file_path)
-        dest_path = os.path.join(archive_folder, "output", file_name)
-        os.makedirs(os.path.dirname(dest_path), exist_ok=True)
+        dest_path = os.path.join(output_dest, file_name)
         shutil.move(file_path, dest_path)
         print(f"{Fore.GREEN}Moved {file_path} to {dest_path}")
 
-    print(f"{Fore.GREEN}All input and output files have been moved to {archive_folder}")
+    print(f"{Fore.GREEN}All input and output files have been moved to {timestamped_folder}")
 
 def split_audio(file_path: str, interval_minutes: int = 10) -> list[str]:
     """
