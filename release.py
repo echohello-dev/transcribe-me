@@ -41,7 +41,7 @@ if __name__ == "__main__":
     github_repository = os.environ.get("GITHUB_REPOSITORY")
 
     if not github_token or not github_repository:
-        print("Error: GITHUB_TOKEN and REPO_SLUG environment variables are required.")
+        print("Error: GITHUB_TOKEN and GITHUB_REPOSITORY environment variables are required.")
         exit(1)
 
     new_version = get_new_version()

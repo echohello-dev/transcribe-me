@@ -34,7 +34,16 @@ build: install
 	$(VENV) python -m build
 
 bump:
-	$(VENV) python -m commitizen bump
+	$(VENV) python -m commitizen bump || $(VENV) python -m commitizen bump --increment patch
+
+bump-major:
+	$(VENV) python -m commitizen bump --increment major
+
+bump-minor:
+	$(VENV) python -m commitizen bump --increment minor
+
+bump-patch:
+	$(VENV) python -m commitizen bump --increment patch
 
 publish: build
 ifdef DRY_RUN
