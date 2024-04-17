@@ -9,7 +9,7 @@ def get_new_version():
     return result.stdout.strip()
 
 def get_changelog():
-    result = subprocess.run(["cz", "changelog", "--dry-run"], capture_output=True, text=True)
+    result = subprocess.run(["cz", "changelog", "--dry-run", "$(cz version -p)"], capture_output=True, text=True)
     if result.returncode != 0:
         raise ValueError(f"Failed to get changelog: {result.stderr}")
     return result.stdout.strip()
