@@ -1,5 +1,11 @@
 VENV := . venv/bin/activate &&
 
+-include .env
+export
+
+
+init:
+	cp .env.example .env
 
 check-ffmpeg:
 ifeq (, $(shell which ffmpeg))
