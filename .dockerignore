@@ -1,0 +1,15 @@
+.env
+.git
+.github/
+.gitignore
+*.egg-info/
+*.md
+**/tests/
+archive/
+dist/
+input/
+LICENSE
+output/
+pyproject.toml
+release.py
+venv/

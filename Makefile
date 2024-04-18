@@ -33,6 +33,9 @@ test: install
 build: install
 	$(VENV) python -m build
 
+build-image:
+	docker compose build
+
 bump:
 	$(VENV) python -m commitizen bump || $(VENV) python -m commitizen bump --increment patch
 
