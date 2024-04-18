@@ -35,6 +35,7 @@ build: install
 
 build-image:
 	docker compose build
+	VERSION=$(shell git describe --tags --abbrev=0) docker compose build
 
 bump:
 	$(VENV) python -m commitizen bump || $(VENV) python -m commitizen bump --increment patch
@@ -66,6 +67,7 @@ endif
 
 publish-image: build-image
 	docker compose push
+	VERSION=$(shell git describe --tags --abbrev=0) docker compose push
 
 transcribe: install
 	$(VENV) python transcribe_me/main.py
