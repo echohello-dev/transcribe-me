@@ -50,6 +50,11 @@ bump-patch:
 
 gh-bump:
 	gh workflow run version.yaml
+	gh workflow view version.yaml --web
+
+gh-publish-image:
+	gh workflow run publish-image.yaml
+	gh workflow view publish-image.yaml --web
 
 publish-package: build
 	rm -rdf dist
