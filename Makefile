@@ -51,13 +51,16 @@ bump-patch:
 gh-bump:
 	gh workflow run version.yaml
 
-publish: build
+publish-package: build
 	rm -rdf dist
 ifdef DRY_RUN
 	$(VENV) python -m twine upload --repository testpypi dist/*
 else
 	$(VENV) python -m twine upload dist/*
 endif
+
+publish-image: build-image
+	docker compose push
 
 transcribe: install
 	$(VENV) python transcribe_me/main.py
