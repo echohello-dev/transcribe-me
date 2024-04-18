@@ -93,6 +93,45 @@ The Transcribe Me application follows a straightforward workflow:
    transcribe-me archive
    ```
 
+### Docker
+
+You can also run the application using Docker:
+
+1. Run the following command to run the application in Docker:
+
+    ```bash
+    docker run \
+        --rm \
+        -v $(pwd)/input:/app/input \
+        -v $(pwd)/output:/app/output \
+        -v $(pwd)/.transcribe.yaml:/app/.transcribe.yaml \
+        ghcr.io/echohello-dev/transcribe-me:latest
+    ```
+
+    This command mounts the `input` and `output` directories and the `.transcribe.yaml` configuration file into the Docker container.
+
+2. (Optional) We can also run the application using the provided `docker-compose.yml` file:
+
+    ```yaml
+    version: '3'
+    services:
+      transcribe-me:
+        image: ghcr.io/echohello-dev/transcribe-me:latest
+        volumes:
+          - ./input:/app/input
+          - ./output:/app/output
+          - ./archive:/app/archive
+          - ./.transcribe.yaml:/app/.transcribe.yaml
+    ```
+
+   Run the following command to start the application using Docker Compose:
+
+   ```bash
+   docker compose run --rm app
+   ```
+
+   This command mounts the `input`, `output`, `archive`, and `.transcribe.yaml` configuration file into the Docker container.
+
 ## :gear: Configuration
 
 The application uses a configuration file (`.transcribe.yaml`) to specify settings such as input/output directories, API keys, models, and their configurations. The configuration file is created automatically when you run the `transcribe-me install` command.
