@@ -130,7 +130,7 @@ You can also run the application using Docker:
    docker compose run --rm app
    ```
 
-   This command mounts the `input`, `output`, `archive`, and `.transcribe.yaml` configuration file into the Docker container.
+   This command mounts the `input`, `output`, `archive`, and `.transcribe.yaml` configuration file into the Docker container. See [`compose.example.yaml`](./compose.example.yaml) for an example configuration.
 
 ## :gear: Configuration
 
