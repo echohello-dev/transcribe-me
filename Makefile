@@ -17,6 +17,11 @@ endif
 freeze:
 	$(VENV) pip freeze > requirements.txt
 
+login-ghcr:
+ifdef GITHUB_TOKEN
+	echo "${GITHUB_TOKEN}" | docker login ghcr.io -u "${GITHUB_ACTOR}" --password-stdin
+else
+
 install:
 ifneq (, $(shell which asdf))
 	asdf install python
@@ -57,7 +62,7 @@ gh-publish-image:
 	gh workflow run publish-image.yaml
 	gh workflow view publish-image.yaml --web
 
-publish-package: build
+publish-package: build login-ghcr
 	rm -rdf dist
 ifdef DRY_RUN
 	$(VENV) python -m twine upload --repository testpypi dist/*
