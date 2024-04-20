@@ -66,10 +66,10 @@ ifdef CI
 endif
 	git checkout main
 	git pull
-	sed -i 's/__version__ = ".*"/__version__ = "$(LATEST_VERSION)"/' ./transcribe_me/__init__.py
+	sed -i 's|__version__ = ".*"|__version__ = "$(LATEST_VERSION)"|' transcribe_me/__init__.py
 	git add .
-	git commit -m "Release v$(LATEST_VERSION)"
-	git tag -fa "v$(LATEST_VERSION)" -m "Release v$(LATEST_VERSION)"
+	git commit
+	git tag -fa "v$(LATEST_VERSION)"
 	git push origin main
 	git push --tags
 
@@ -81,10 +81,10 @@ endif
 	git checkout main
 	git pull
 	$(eval NEW_VERSION := $(shell echo $(LATEST_VERSION) | awk -F. '{printf("%d.%d.%d", $$1+1, 0, 0)}'))
-	sed -i 's/__version__ = ".*"/__version__ = "$(NEW_VERSION)"/' ./transcribe_me/__init__.py
+	sed -i 's|__version__ = ".*"|__version__ = "$(NEW_VERSION)"|' transcribe_me/__init__.py
 	git add .
-	git commit -m "Bump version to $(NEW_VERSION)"
-	git tag -a "v$(NEW_VERSION)" -m "Release v$(NEW_VERSION)"
+	git commit -m "chore: Bump version to $(NEW_VERSION)"
+	git tag -a "v$(NEW_VERSION)"
 	git push origin main
 	git push --tags
 
@@ -96,10 +96,10 @@ endif
 	git checkout main
 	git pull
 	$(eval NEW_VERSION := $(shell echo $(LATEST_VERSION) | awk -F. '{printf("%d.%d.%d", $$1, $$2+1, 0)}'))
-	sed -i 's/__version__ = ".*"/__version__ = "$(NEW_VERSION)"/' ./transcribe_me/__init__.py
+	sed -i 's|__version__ = ".*"|__version__ = "$(NEW_VERSION)"|' transcribe_me/__init__.py
 	git add .
-	git commit -m "Bump version to $(NEW_VERSION)"
-	git tag -a "v$(NEW_VERSION)" -m "Release v$(NEW_VERSION)"
+	git commit -m "chore: Bump version to $(NEW_VERSION)"
+	git tag -a "v$(NEW_VERSION)"
 	git push origin main
 	git push --tags
 
@@ -111,10 +111,10 @@ endif
 	git checkout main
 	git pull
 	$(eval NEW_VERSION := $(shell echo $(LATEST_VERSION) | awk -F. '{printf("%d.%d.%d", $$1, $$2, $$3+1)}'))
-	sed -i 's/__version__ = ".*"/__version__ = "$(NEW_VERSION)"/' ./transcribe_me/__init__.py
+	sed -i 's|__version__ = ".*"|__version__ = "$(NEW_VERSION)"|' transcribe_me/__init__.py
 	git add .
-	git commit -m "Bump version to $(NEW_VERSION)"
-	git tag -a "v$(NEW_VERSION)" -m "Release v$(NEW_VERSION)"
+	git commit -m "chore: Bump version to $(NEW_VERSION)"
+	git tag -a "v$(NEW_VERSION)"
 	git push origin main
 	git push --tags
 
