@@ -55,8 +55,8 @@ tag-release: install
 	git push --set-upstream origin release/$(shell git describe --tags --abbrev=0)
 	git push --tags
 
-bump-devrelease: install
-	$(VENV) python -m commitizen bump --yes -d 1
+bump-prerelease: install
+	$(VENV) python -m commitizen bump --yes -pr alpha
 	git push --tags
 
 bump-major: install
