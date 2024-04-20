@@ -125,6 +125,9 @@ You can also run the application using Docker:
     services:
       transcribe-me:
         image: ghcr.io/echohello-dev/transcribe-me:latest
+        environment:
+          - OPENAI_API_KEY
+          - ANTHROPIC_API_KEY
         volumes:
           - ./input:/app/input
           - ./output:/app/output
