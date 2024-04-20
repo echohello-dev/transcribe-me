@@ -41,6 +41,9 @@ build: install
 build-image:
 	docker compose build
 
+bump-prerelease:
+	$(VENV) python -m commitizen bump -pr alpha --dry-run
+
 bump-major:
 	$(VENV) python -m commitizen bump --increment major
 
