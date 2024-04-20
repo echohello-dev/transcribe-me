@@ -39,10 +39,10 @@ lint:
 	$(VENV) python -m pylint transcribe_me --fail-under 7
 
 # TODO: $(VENV) python -m unittest discover -s .
-test: install
+test:
 	@echo "Not implemented"
 
-build: install
+build:
 	rm -rdf build dist
 	$(VENV) python -m build
 
