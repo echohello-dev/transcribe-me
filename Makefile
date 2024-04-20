@@ -20,7 +20,7 @@ freeze:
 login-ghcr:
 ifdef GITHUB_TOKEN
 	echo "${GITHUB_TOKEN}" | docker login ghcr.io -u "${GITHUB_ACTOR}" --password-stdin
-else
+endif
 
 install:
 ifneq (, $(shell which asdf))
@@ -33,7 +33,7 @@ install-cli: check-ffmpeg
 	pip install .
 
 test: install
-	$(VENV) python -m unittest discover -s tests
+	$(VENV) python -m unittest discover -s .
 
 build: install
 	$(VENV) python -m build
@@ -75,10 +75,10 @@ publish-image: build-image
 	VERSION=$(shell git describe --tags --abbrev=0) docker compose push
 
 transcribe: install
-	$(VENV) python transcribe_me/main.py
+	$(VENV) python -m transcribe_me.main
 
 transcribe-archive: install
-	$(VENV) python transcribe_me/main.py archive
+	$(VENV) python -m transcribe_me.main archive
 
 transcribe-install: install
-	$(VENV) python transcribe_me/main.py install
+	$(VENV) python -m transcribe_me.main install
