@@ -49,29 +49,29 @@ build: install
 build-image:
 	docker compose build
 
-tag-release:
+tag-release: install
 	git branch --force -D release/$(shell git describe --tags --abbrev=0)
 	git checkout -b release/$(shell git describe --tags --abbrev=0)
 	git push --set-upstream origin release/$(shell git describe --tags --abbrev=0)
 	git push --tags
 
-bump-prerelease:
+bump-prerelease: install
 	$(VENV) python -m commitizen bump --yes -pr alpha
 	git push --tags
 
-bump-major:
+bump-major: install
 	git checkout main
 	git checkout -b release/$(shell git describe --tags --abbrev=0)
 	$(VENV) python -m commitizen bump --yes --increment major
 	git push --tags
 
-bump-minor:
+bump-minor: install
 	git checkout main
 	git checkout -b release/$(shell git describe --tags --abbrev=0)
 	$(VENV) python -m commitizen bump --yes --increment minor
 	git push --tags
 
-bump-patch:
+bump-patch: install
 	git checkout main
 	git checkout -b release/$(shell git describe --tags --abbrev=0)
 	$(VENV) python -m commitizen bump --yes --increment patch
