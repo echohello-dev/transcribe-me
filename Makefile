@@ -5,22 +5,6 @@ LATEST_VERSION := $(shell git describe --tags)
 -include .env
 export
 
-define release_version =
-ifdef CI
-	git config --global user.email "actions@github.com"
-	git config --global user.name "GitHub Actions"
-endif
-	sed -i '' "s/__version__ = '.*'/__version__ = '$(1)'/g" transcribe_me/__init__.py
-	git add transcribe_me/__init__.py
-	git commit -m "chore: Bump version to $(1)"
-	git tag -a "v$(1)"
-	git push origin main
-	git push --tags
-	git branch --force -D release/$(1)
-	git checkout -b release/$(1)
-	git push --set-upstream origin release/$(1)
-endef
-
 init:
 	cp .env.example .env
 
@@ -69,16 +53,52 @@ build-image:
 	docker compose build
 
 release-major:
-	$(eval NEW_MAJOR_VERSION=$(shell echo "$(LATEST_TAG)" | awk -F'.' '{printf "%d.0.0", $$1 + 1}'))
-	$(call release_version,$(NEW_MAJOR_VERSION))
+	$(eval VERSION=$(shell echo "$(LATEST_TAG)" | awk -F'.' '{printf "%d.0.0", $$1 + 1}'))
+ifdef CI
+	git config --global user.email "actions@github.com"
+	git config --global user.name "GitHub Actions"
+endif
+	sed -i '' "s/__version__ = '.*'/__version__ = '$(VERSION)'/g" transcribe_me/__init__.py
+	git add transcribe_me/__init__.py
+	git commit -m "chore: Bump version to $(VERSION)"
+	git tag -a "v$(VERSION)"
+	git push origin main
+	git push --tags
+	git branch --force -D release/$(VERSION)
+	git checkout -b release/$(VERSION)
+	git push --set-upstream origin release/$(VERSION)
 
 release-minor:
-	$(eval NEW_MINOR_VERSION=$(shell echo "$(LATEST_TAG)" | awk -F'.' '{printf "%d.%d.0", $$1, $$2 + 1}'))
-	$(call release_version,$(NEW_MINOR_VERSION))
+	$(eval VERSION=$(shell echo "$(LATEST_TAG)" | awk -F'.' '{printf "%d.%d.0", $$1, $$2 + 1}'))
+ifdef CI
+	git config --global user.email "actions@github.com"
+	git config --global user.name "GitHub Actions"
+endif
+	sed -i '' "s/__version__ = '.*'/__version__ = '$(VERSION)'/g" transcribe_me/__init__.py
+	git add transcribe_me/__init__.py
+	git commit -m "chore: Bump version to $(VERSION)"
+	git tag -a "v$(VERSION)"
+	git push origin main
+	git push --tags
+	git branch --force -D release/$(VERSION)
+	git checkout -b release/$(VERSION)
+	git push --set-upstream origin release/$(VERSION)
 
 release-patch:
-	$(eval NEW_PATCH_VERSION=$(shell echo "$(LATEST_TAG)" | awk -F'.' '{printf "%d.%d.%d", $$1, $$2, $$3 + 1}'))
-	$(call release_version,$(NEW_PATCH_VERSION))
+	$(eval VERSION=$(shell echo "$(LATEST_TAG)" | awk -F'.' '{printf "%d.%d.%d", $$1, $$2, $$3 + 1}'))
+ifdef CI
+	git config --global user.email "actions@github.com"
+	git config --global user.name "GitHub Actions"
+endif
+	sed -i '' "s/__version__ = '.*'/__version__ = '$(VERSION)'/g" transcribe_me/__init__.py
+	git add transcribe_me/__init__.py
+	git commit -m "chore: Bump version to $(VERSION)"
+	git tag -a "v$(VERSION)"
+	git push origin main
+	git push --tags
+	git branch --force -D release/$(VERSION)
+	git checkout -b release/$(VERSION)
+	git push --set-upstream origin release/$(VERSION)
 
 gh-publish-image:
 	gh workflow view prerelease.yaml --web
