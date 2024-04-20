@@ -46,13 +46,22 @@ bump-prerelease:
 	git push --tags
 
 bump-major:
+	git checkout main
 	$(VENV) python -m commitizen bump --yes --increment major
+	git checkout -b release/$(shell git describe --tags --abbrev=0)
+	git push --tags
 
 bump-minor:
+	git checkout main
 	$(VENV) python -m commitizen bump --yes --increment minor
+	git checkout -b release/$(shell git describe --tags --abbrev=0)
+	git push --tags
 
 bump-patch:
+	git checkout main
 	$(VENV) python -m commitizen bump --yes --increment patch
+	git checkout -b release/$(shell git describe --tags --abbrev=0)
+	git push --tags
 
 gh-bump:
 	gh workflow run version.yaml
