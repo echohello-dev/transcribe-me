@@ -40,7 +40,6 @@ build: install
 
 build-image:
 	docker compose build
-	VERSION=$(shell git describe --tags --abbrev=0) docker compose build
 
 bump-major:
 	$(VENV) python -m commitizen bump --increment major
@@ -70,7 +69,6 @@ endif
 
 publish-image: build-image login-ghcr
 	docker compose push
-	VERSION=$(shell git describe --tags --abbrev=0) docker compose push
 
 transcribe: install
 	$(VENV) python -m transcribe_me.main
