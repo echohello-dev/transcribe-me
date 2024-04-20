@@ -2,6 +2,9 @@ version: '3'
 services:
   transcribe-me:
     image: ghcr.io/echohello-dev/transcribe-me:${VERSION:-latest}
+    environment:
+      - OPENAI_API_KEY
+      - ANTHROPIC_API_KEY
     volumes:
       - ./input:/app/input
       - ./output:/app/output

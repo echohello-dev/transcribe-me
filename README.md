@@ -75,9 +75,16 @@ Tool has been tested with Python 3.12.
 
 1. Bootstrap your current directory with the configuration file:
 
-   ```bash
-   transcribe-me install
-   ```
+    ```bash
+    transcribe-me install
+    ```
+
+    This command will also prompt you to enter your API keys for OpenAI and Anthropic if they are not already provided in environment variables. You can also set the API keys in environment variables:
+
+    ```bash
+    export OPENAI_API_KEY=your_api_key
+    export ANTHROPIC_API_KEY=your_api_key
+    ```
 
 2. Place your audio files in the `input` directory (or any other directory specified in the configuration).
 3. Run the application:
