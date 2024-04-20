@@ -1,4 +1,4 @@
-name: Prerelease
+name: Release Latest
 
 on:
   push:
@@ -20,5 +20,5 @@ jobs:
     steps:
     - uses: actions/checkout@v4
     - uses: asdf-vm/actions/install@v3
-    - run: make bump-prerelease
+    - run: make release-latest
     
