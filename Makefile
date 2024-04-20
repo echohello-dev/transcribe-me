@@ -26,7 +26,7 @@ install:
 ifneq (, $(shell which asdf))
 	asdf install python
 endif
-	python3 -m venv venv
+	python -m venv venv
 	$(VENV) pip install -r requirements.txt
 
 install-cli: check-ffmpeg
