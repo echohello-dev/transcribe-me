@@ -10,11 +10,16 @@ jobs:
   release:
     runs-on: ubuntu-latest
 
+    permissions:
+      contents: read
+      packages: write
+
     env:
       TWINE_PASSWORD: ${{ secrets.PYPI_PASSWORD }}
 
     steps:
     - uses: actions/checkout@v4
     - uses: asdf-vm/actions/install@v3
+    - run: make prerelease
     - run: make publish-package
     - run: make publish-image
