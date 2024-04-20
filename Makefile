@@ -53,12 +53,6 @@ build:
 build-image:
 	docker compose build
 
-tag-release: install
-	git branch --force -D release/$(LATEST_TAG)
-	git checkout -b release/$(LATEST_TAG)
-	git push --set-upstream origin release/$(LATEST_TAG)
-	git push --tags
-
 release-latest:
 ifdef CI
 	git config --global user.email "actions@github.com"
@@ -66,57 +60,29 @@ ifdef CI
 endif
 	git checkout main
 	git pull
-	sed -i 's|__version__ = ".*"|__version__ = "$(LATEST_VERSION)"|' transcribe_me/__init__.py
+	sed -i "s/__version__ = '.*'/__version__ = '$(LATEST_VERSION)'/g" transcribe_me/__init__.py
 	git add .
 	git commit
 	git tag -fa "v$(LATEST_VERSION)"
 	git push origin main
 	git push --tags
 
-release-major:
+release-version:
 ifdef CI
 	git config --global user.email "actions@github.com"
 	git config --global user.name "GitHub Actions"
 endif
 	git checkout main
 	git pull
-	$(eval NEW_VERSION := $(shell echo $(LATEST_VERSION) | awk -F. '{printf("%d.%d.%d", $$1+1, 0, 0)}'))
-	sed -i 's|__version__ = ".*"|__version__ = "$(NEW_VERSION)"|' transcribe_me/__init__.py
+	sed -i "s/__version__ = '.*'/__version__ = '$(VERSION)'/g" transcribe_me/__init__.py
 	git add .
-	git commit -m "chore: Bump version to $(NEW_VERSION)"
-	git tag -a "v$(NEW_VERSION)"
+	git commit -m "chore: Bump version to $(VERSION)"
+	git tag -a "v$(VERSION)"
 	git push origin main
 	git push --tags
-
-release-minor:
-ifdef CI
-	git config --global user.email "actions@github.com"
-	git config --global user.name "GitHub Actions"
-endif
-	git checkout main
-	git pull
-	$(eval NEW_VERSION := $(shell echo $(LATEST_VERSION) | awk -F. '{printf("%d.%d.%d", $$1, $$2+1, 0)}'))
-	sed -i 's|__version__ = ".*"|__version__ = "$(NEW_VERSION)"|' transcribe_me/__init__.py
-	git add .
-	git commit -m "chore: Bump version to $(NEW_VERSION)"
-	git tag -a "v$(NEW_VERSION)"
-	git push origin main
-	git push --tags
-
-release-patch:
-ifdef CI
-	git config --global user.email "actions@github.com"
-	git config --global user.name "GitHub Actions"
-endif
-	git checkout main
-	git pull
-	$(eval NEW_VERSION := $(shell echo $(LATEST_VERSION) | awk -F. '{printf("%d.%d.%d", $$1, $$2, $$3+1)}'))
-	sed -i 's|__version__ = ".*"|__version__ = "$(NEW_VERSION)"|' transcribe_me/__init__.py
-	git add .
-	git commit -m "chore: Bump version to $(NEW_VERSION)"
-	git tag -a "v$(NEW_VERSION)"
-	git push origin main
-	git push --tags
+	git branch --force -D release/$(VERSION)
+	git checkout -b release/$(VERSION)
+	git push --set-upstream origin release/$(VERSION)
 
 gh-publish-image:
 	gh workflow view prerelease.yaml --web
