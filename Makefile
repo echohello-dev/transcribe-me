@@ -62,15 +62,16 @@ gh-publish-image:
 	gh workflow run publish-image.yaml
 	gh workflow view publish-image.yaml --web
 
-publish-package: build login-ghcr
+publish-package:
 	rm -rdf dist
+	$(MAKE) build
 ifdef DRY_RUN
 	$(VENV) python -m twine upload --repository testpypi dist/*
 else
 	$(VENV) python -m twine upload dist/*
 endif
 
-publish-image: build-image
+publish-image: build-image login-ghcr
 	docker compose push
 	VERSION=$(shell git describe --tags --abbrev=0) docker compose push
 
