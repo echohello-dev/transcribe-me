@@ -70,13 +70,8 @@ bump-patch:
 	$(VENV) python -m commitizen bump --yes --increment patch
 	git push --tags
 
-gh-bump:
-	gh workflow run version.yaml
-	gh workflow view version.yaml --web
-
 gh-publish-image:
-	gh workflow run publish-image.yaml
-	gh workflow view publish-image.yaml --web
+	gh workflow view prerelease.yaml --web
 
 publish-package:
 	rm -rdf dist
