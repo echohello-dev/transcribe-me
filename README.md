@@ -24,11 +24,52 @@ graph TD
 
 ## :package: Installation
 
-1. Install the application using pip:
+Tool has been tested with Python 3.12.
+
+### macOS
+
+1. Install Python. Recommended way is to use ASDF:
+
+    ```bash
+    brew install asdf
+    asdf plugin add python
+    asdf install python 3.12.0
+    asdf global python 3.12.0
+    ```
+
+2. Install FFmpeg using Homebrew:
 
    ```bash
-   pip install transcribe-me
+   brew install ffmpeg
    ```
+
+3. Install the application using pip:
+
+    ```
+    pip install transcribe-me
+    ```
+
+### Windows
+
+1. Install ASDF. Download the ASDF installer from the [ASDF website](https://asdf-vm.com/#/core-manage-asdf) and run it. Then, install Python using ASDF:
+
+    ```bash
+    asdf plugin add python
+    asdf install python 3.12.0
+    asdf global python 3.12.0
+    ```
+
+2. Install FFmpeg using Chocolatey:
+
+   ```bash
+   choco install ffmpeg
+   ```
+
+3. Install the application using pip:
+
+    ```
+    pip install transcribe-me
+    ```
 
 ## :wrench: Usage
 
