@@ -42,15 +42,14 @@ build: install
 build-image:
 	docker compose build
 
-bump-prerelease:
-	$(VENV) python -m commitizen bump --yes -pr alpha
-	git push --tags
-
-bump-release:
-	git checkout main
+tag-release:
 	git branch --force -D release/$(shell git describe --tags --abbrev=0)
 	git checkout -b release/$(shell git describe --tags --abbrev=0)
 	git push --set-upstream origin release/$(shell git describe --tags --abbrev=0)
+	git push --tags
+
+bump-prerelease:
+	$(VENV) python -m commitizen bump --yes -pr alpha
 	git push --tags
 
 bump-major:
