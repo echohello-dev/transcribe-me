@@ -4,8 +4,6 @@ on:
   push:
     tags:
       - 'v*.*.*'
-  pull_request:
-    types: [opened, reopened, synchronize]
 
 permissions:
   contents: read
@@ -16,9 +14,15 @@ jobs:
       contents: write
       pull-requests: write
     runs-on: ubuntu-latest
+
+    env:
+      VERSION: ${{ github.ref_name }}
+
     steps:
+      - run: make publish-package
+      - run: make publish-latest-image
       - uses: release-drafter/release-drafter@v5
         with:
-          publish: true
+          version: ${{ github.ref_name }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

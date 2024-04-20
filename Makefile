@@ -91,7 +91,6 @@ endif
 
 publish-image: login-ghcr
 	docker compose build --push
-	VERSION=$(shell git describe --tags --abbrev=0) docker compose build --push
 
 transcribe: install
 	$(VENV) python -m transcribe_me.main
