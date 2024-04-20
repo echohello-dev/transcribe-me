@@ -17,9 +17,3 @@ jobs:
     - uses: asdf-vm/actions/install@v3
     - run: make publish-package
     - run: make publish-image
-    # - name: Publish release
-    #   uses: release-drafter/release-drafter@v5
-    #   with:
-    #     publish: true
-    #   env:
-    #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
