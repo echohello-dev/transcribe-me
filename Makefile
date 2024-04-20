@@ -89,8 +89,9 @@ else
 	$(VENV) python -m twine upload dist/*
 endif
 
-publish-image: build-image login-ghcr
-	docker compose push
+publish-image: login-ghcr
+	docker compose build --push
+	VERSION=$(shell git describe --tags --abbrev=0) docker compose build --push
 
 transcribe: install
 	$(VENV) python -m transcribe_me.main
