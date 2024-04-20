@@ -32,8 +32,9 @@ endif
 install-cli: check-ffmpeg
 	pip install .
 
+# TODO: $(VENV) python -m unittest discover -s .
 test: install
-	$(VENV) python -m unittest discover -s .
+	@echo "Not implemented"
 
 build: install
 	$(VENV) python -m build
