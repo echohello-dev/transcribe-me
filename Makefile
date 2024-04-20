@@ -33,13 +33,17 @@ install-cli: check-ffmpeg
 	pip install .
 
 format:
-	$(VENV) black .
+	$(VENV) python -m black transcribe_me
+
+lint:
+	$(VENV) python -m pylint transcribe_me --fail-under 7
 
 # TODO: $(VENV) python -m unittest discover -s .
 test: install
 	@echo "Not implemented"
 
 build: install
+	rm -rdf build dist
 	$(VENV) python -m build
 
 build-image:

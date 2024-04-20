@@ -15,4 +15,6 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: asdf-vm/actions/install@v3
+      - run: make lint
       - run: make test
+      - run: make build
