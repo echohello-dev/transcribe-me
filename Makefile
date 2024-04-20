@@ -42,16 +42,17 @@ build-image:
 	docker compose build
 
 bump-prerelease:
-	$(VENV) python -m commitizen bump -pr alpha --dry-run
+	$(VENV) python -m commitizen bump --yes -pr alpha
+	git push --tags
 
 bump-major:
-	$(VENV) python -m commitizen bump --increment major
+	$(VENV) python -m commitizen bump --yes --increment major
 
 bump-minor:
-	$(VENV) python -m commitizen bump --increment minor
+	$(VENV) python -m commitizen bump --yes --increment minor
 
 bump-patch:
-	$(VENV) python -m commitizen bump --increment patch
+	$(VENV) python -m commitizen bump --yes --increment patch
 
 gh-bump:
 	gh workflow run version.yaml
