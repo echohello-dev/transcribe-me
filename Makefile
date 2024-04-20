@@ -1,4 +1,6 @@
 VENV := . venv/bin/activate &&
+LATEST_TAG := $(shell git describe --tags --abbrev=0)
+LATEST_VERSION := $(shell git describe)
 
 -include .env
 export
@@ -50,9 +52,9 @@ build-image:
 	docker compose build
 
 tag-release: install
-	git branch --force -D release/$(shell git describe --tags --abbrev=0)
-	git checkout -b release/$(shell git describe --tags --abbrev=0)
-	git push --set-upstream origin release/$(shell git describe --tags --abbrev=0)
+	git branch --force -D release/$(LATEST_TAG)
+	git checkout -b release/$(LATEST_TAG)
+	git push --set-upstream origin release/$(LATEST_TAG)
 	git push --tags
 
 bump-prerelease: install
@@ -65,20 +67,35 @@ endif
 
 bump-major: install
 	git checkout main
-	git checkout -b release/$(shell git describe --tags --abbrev=0)
-	$(VENV) python -m commitizen bump --yes --increment major
+	git pull
+	$(eval NEW_VERSION := $(shell echo $(LATEST_VERSION) | awk -F. '{printf("%d.%d.%d", $$1+1, 0, 0)}'))
+	sed -i 's/version = "$(LATEST_VERSION)"/version = "$(NEW_VERSION)"/' pyproject.toml
+	git add pyproject.toml
+	git commit -m "Bump version to $(NEW_VERSION)"
+	git tag -a "v$(NEW_VERSION)" -m "Release v$(NEW_VERSION)"
+	git push origin main
 	git push --tags
 
 bump-minor: install
 	git checkout main
-	git checkout -b release/$(shell git describe --tags --abbrev=0)
-	$(VENV) python -m commitizen bump --yes --increment minor
+	git pull
+	$(eval NEW_VERSION := $(shell echo $(LATEST_VERSION) | awk -F. '{printf("%d.%d.%d", $$1, $$2+1, 0)}'))
+	sed -i 's/version = "$(LATEST_VERSION)"/version = "$(NEW_VERSION)"/' pyproject.toml
+	git add pyproject.toml
+	git commit -m "Bump version to $(NEW_VERSION)"
+	git tag -a "v$(NEW_VERSION)" -m "Release v$(NEW_VERSION)"
+	git push origin main
 	git push --tags
 
 bump-patch: install
 	git checkout main
-	git checkout -b release/$(shell git describe --tags --abbrev=0)
-	$(VENV) python -m commitizen bump --yes --increment patch
+	git pull
+	$(eval NEW_VERSION := $(shell echo $(LATEST_VERSION) | awk -F. '{printf("%d.%d.%d", $$1, $$2, $$3+1)}'))
+	sed -i 's/version = "$(LATEST_VERSION)"/version = "$(NEW_VERSION)"/' pyproject.toml
+	git add pyproject.toml
+	git commit -m "Bump version to $(NEW_VERSION)"
+	git tag -a "v$(NEW_VERSION)" -m "Release v$(NEW_VERSION)"
+	git push origin main
 	git push --tags
 
 gh-publish-image:

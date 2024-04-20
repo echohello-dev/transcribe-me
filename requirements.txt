@@ -9,7 +9,6 @@ certifi==2024.2.2
 charset-normalizer==3.3.2
 click==8.1.7
 colorama==0.4.6
-commitizen==3.22.0
 decli==0.6.1
 dill==0.3.8
 distro==1.9.0
