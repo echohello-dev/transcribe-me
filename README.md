@@ -21,6 +21,8 @@ graph TD
 - **Audio Transcription**: Transcribes audio files using the OpenAI Whisper API. It supports both MP3 and M4A formats and can handle large files by splitting them into smaller chunks for transcription.
 - **Summary Generation**: Generates summaries of the transcriptions using both OpenAI's GPT-4 and Anthropic's Claude models. The summaries are saved in Markdown format and include key points in bold and a "Next Steps" section.
 - **Configurable Models**: Supports multiple models for OpenAI and Anthropic, with configurable temperature, max_tokens, and system prompts.
+- **Supports Audio Files**: Supports audio files `.m4a` and `.mp3` formats.
+- **Supports Docker**: Can be run in a Docker container for easy deployment and reproducibility.
 
 ## :package: Installation
 
@@ -28,7 +30,7 @@ Tool has been tested with Python 3.12.
 
 ### macOS
 
-1. Install Python. Recommended way is to use ASDF:
+1. Install Python. Recommended way is to use [asdf](https://asdf-vm.com/guide/getting-started.html):
 
     ```bash
     brew install asdf
@@ -41,28 +43,6 @@ Tool has been tested with Python 3.12.
 
    ```bash
    brew install ffmpeg
-   ```
-
-3. Install the application using pip:
-
-    ```
-    pip install transcribe-me
-    ```
-
-### Windows
-
-1. Install ASDF. Download the ASDF installer from the [ASDF website](https://asdf-vm.com/#/core-manage-asdf) and run it. Then, install Python using ASDF:
-
-    ```bash
-    asdf plugin add python
-    asdf install python 3.12.0
-    asdf global python 3.12.0
-    ```
-
-2. Install FFmpeg using Chocolatey:
-
-   ```bash
-   choco install ffmpeg
    ```
 
 3. Install the application using pip:
