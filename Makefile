@@ -60,7 +60,7 @@ ifdef CI
 endif
 	git checkout main
 	git pull
-	sed -i "s/__version__ = '.*'/__version__ = '$(LATEST_VERSION)'/g" transcribe_me/__init__.py
+	sed -i '' "s/__version__ = '.*'/__version__ = '$(LATEST_VERSION)'/g" transcribe_me/__init__.py
 	git add .
 	git commit
 	git tag -fa "v$(LATEST_VERSION)"
@@ -74,7 +74,7 @@ ifdef CI
 endif
 	git checkout main
 	git pull
-	sed -i "s/__version__ = '.*'/__version__ = '$(VERSION)'/g" transcribe_me/__init__.py
+	sed -i '' "s/__version__ = '.*'/__version__ = '$(VERSION)'/g" transcribe_me/__init__.py
 	git add .
 	git commit -m "chore: Bump version to $(VERSION)"
 	git tag -a "v$(VERSION)"
