@@ -47,6 +47,7 @@ bump-prerelease:
 
 bump-release:
 	git checkout main
+	git branch --force -D release/$(shell git describe --tags --abbrev=0)
 	git checkout -b release/$(shell git describe --tags --abbrev=0)
 	git push --set-upstream origin release/$(shell git describe --tags --abbrev=0)
 	git push --tags
