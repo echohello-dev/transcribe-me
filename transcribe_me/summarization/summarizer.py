@@ -8,8 +8,11 @@ import os
 OPENAI_API_KEY = os.environ.get("OPENAI_API_KEY")
 ANTHROPIC_API_KEY = os.environ.get("ANTHROPIC_API_KEY")
 
+
 @retry(wait=wait_exponential(multiplier=1, min=4, max=60), stop=stop_after_attempt(5))
-def generate_summary(transcription: str, platform: str, model_config: Dict[str, Any]) -> str:
+def generate_summary(
+    transcription: str, platform: str, model_config: Dict[str, Any]
+) -> str:
     """
     Generate a summary from the transcription using the specified model configuration.
     Retry with exponential backoff in case of rate limiting.
@@ -56,7 +59,10 @@ def generate_summary(transcription: str, platform: str, model_config: Dict[str, 
 
     return summary
 
-def generate_summaries(input_folder: str, output_folder: str, config: Dict[str, Any]) -> None:
+
+def generate_summaries(
+    input_folder: str, output_folder: str, config: Dict[str, Any]
+) -> None:
     """
     Generate summaries for transcribed files in the output folder using the specified configuration.
 
@@ -88,7 +94,9 @@ def generate_summaries(input_folder: str, output_folder: str, config: Dict[str, 
             if os.path.exists(openai_summary_file):
                 continue
 
-            print(f"{Fore.BLUE}Summarizing {transcription_name} with OpenAI (Temp {model_config['temperature']} - {model_config['model']}):\n")
+            print(
+                f"{Fore.BLUE}Summarizing {transcription_name} with OpenAI (Temp {model_config['temperature']} - {model_config['model']}):\n"
+            )
             openai_summary = generate_summary(transcription, "openai", model_config)
             print(openai_summary + "\n")
 
@@ -106,8 +114,12 @@ def generate_summaries(input_folder: str, output_folder: str, config: Dict[str, 
             if os.path.exists(anthropic_summary_file):
                 continue
 
-            print(f"{Fore.BLUE}Summarizing {transcription_name} with Anthropic (Temp {model_config['temperature']} - {model_config['model']}):\n")
-            anthropic_summary = generate_summary(transcription, "anthropic", model_config)
+            print(
+                f"{Fore.BLUE}Summarizing {transcription_name} with Anthropic (Temp {model_config['temperature']} - {model_config['model']}):\n"
+            )
+            anthropic_summary = generate_summary(
+                transcription, "anthropic", model_config
+            )
             print(anthropic_summary + "\n")
 
             # Write the summary to the file

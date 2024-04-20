@@ -8,6 +8,7 @@ from tenacity import retry, wait_exponential, stop_after_attempt
 
 from .splitting import split_audio
 
+
 @retry(wait=wait_exponential(multiplier=1, min=4, max=60), stop=stop_after_attempt(5))
 def transcribe_chunk(file_path: str) -> str:
     """
@@ -16,7 +17,9 @@ def transcribe_chunk(file_path: str) -> str:
     """
     with open(file_path, "rb") as audio_file:
         try:
-            response = openai.audio.transcriptions.create(language="en", model="whisper-1", file=audio_file)
+            response = openai.audio.transcriptions.create(
+                language="en", model="whisper-1", file=audio_file
+            )
             return response.text
         except openai.error.RateLimitError as e:
             print(f"{Fore.YELLOW}Rate limit reached, retrying in a bit...")
@@ -24,6 +27,7 @@ def transcribe_chunk(file_path: str) -> str:
         except Exception as e:
             print(f"{Fore.RED}An error occurred while transcribing {file_path}: {e}")
             raise e
+
 
 def transcribe_audio(file_path: str, output_path: str) -> None:
     """
@@ -36,20 +40,30 @@ def transcribe_audio(file_path: str, output_path: str) -> None:
     chunk_files = split_audio(file_path)
     full_transcription = ""
 
-    progress_bar = tqdm(chunk_files, desc="Transcribing", unit="chunk", bar_format="{l_bar}{bar}| {n_fmt}/{total_fmt}")
+    progress_bar = tqdm(
+        chunk_files,
+        desc="Transcribing",
+        unit="chunk",
+        bar_format="{l_bar}{bar}| {n_fmt}/{total_fmt}",
+    )
     for chunk_file in progress_bar:
         try:
             transcription = transcribe_chunk(chunk_file)
             full_transcription += transcription + " "
         except Exception as e:
-            print(f"{Fore.RED}An error occurred while transcribing chunk {chunk_file}: {e}")
+            print(
+                f"{Fore.RED}An error occurred while transcribing chunk {chunk_file}: {e}"
+            )
         finally:
             os.remove(chunk_file)
 
     with open(output_path, "w", encoding="utf-8") as file:
         file.write(full_transcription)
 
-def process_audio_files(input_folder: str, output_folder: str, config: Dict[str, Any]) -> None:
+
+def process_audio_files(
+    input_folder: str, output_folder: str, config: Dict[str, Any]
+) -> None:
     """
     Process audio files in the input folder, transcribe them, and save the transcriptions in the output folder.
 

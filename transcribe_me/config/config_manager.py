@@ -14,6 +14,7 @@ DEFAULT_OUTPUT_FOLDER = "output"
 DEFAULT_INPUT_FOLDER = "input"
 DEFAULT_CONFIG_FILE = ".transcribe.yaml"
 
+
 def archive_files(input_folder: str, output_folder: str) -> None:
     """
     Move input and output files to a timestamped folder inside the archive folder.
@@ -47,14 +48,19 @@ def archive_files(input_folder: str, output_folder: str) -> None:
         shutil.move(file_path, dest_path)
         print(f"{Fore.GREEN}Moved {file_path} to {dest_path}")
 
-    print(f"{Fore.GREEN}All input and output files have been moved to {timestamped_folder}")
+    print(
+        f"{Fore.GREEN}All input and output files have been moved to {timestamped_folder}"
+    )
+
 
 def install_config() -> None:
     """
     Create a config file in the current directory and prompt the user to input API keys if not set.
     """
     print(f"{Fore.GREEN}Welcome to the installation process for Transcribe Me.")
-    print(f"{Fore.YELLOW}This will create a configuration file and input/output folders in the current directory.")
+    print(
+        f"{Fore.YELLOW}This will create a configuration file and input/output folders in the current directory."
+    )
 
     config = {
         "openai": {
@@ -106,13 +112,17 @@ def install_config() -> None:
     }
 
     if not OPENAI_API_KEY:
-        print(f"{Fore.YELLOW}Looks like you haven't set your OpenAI API key. We'll set it up for you.")
+        print(
+            f"{Fore.YELLOW}Looks like you haven't set your OpenAI API key. We'll set it up for you."
+        )
         openai_key = input(f"{Fore.CYAN}Enter your OpenAI API key: ")
         os.environ["OPENAI_API_KEY"] = openai_key
         append_to_shell_profile(f"export OPENAI_API_KEY={openai_key}")
 
     if not ANTHROPIC_API_KEY:
-        print(f"{Fore.YELLOW}Looks like you haven't set your Anthropic API key. We'll set it up for you.")
+        print(
+            f"{Fore.YELLOW}Looks like you haven't set your Anthropic API key. We'll set it up for you."
+        )
         anthropic_key = input(f"{Fore.CYAN}Enter your Anthropic API key: ")
         os.environ["ANTHROPIC_API_KEY"] = anthropic_key
         append_to_shell_profile(f"export ANTHROPIC_API_KEY={anthropic_key}")
@@ -120,15 +130,22 @@ def install_config() -> None:
     with open(DEFAULT_CONFIG_FILE, "w") as f:
         yaml.dump(config, f, sort_keys=False)
 
-    print(f"{Fore.GREEN}Configuration file '{DEFAULT_CONFIG_FILE}' created successfully.")
+    print(
+        f"{Fore.GREEN}Configuration file '{DEFAULT_CONFIG_FILE}' created successfully."
+    )
 
     os.makedirs(DEFAULT_INPUT_FOLDER, exist_ok=True)
     os.makedirs(DEFAULT_OUTPUT_FOLDER, exist_ok=True)
 
-    print(f"{Fore.GREEN}Input and output folders '{DEFAULT_INPUT_FOLDER}' and '{DEFAULT_OUTPUT_FOLDER}' created successfully.")
+    print(
+        f"{Fore.GREEN}Input and output folders '{DEFAULT_INPUT_FOLDER}' and '{DEFAULT_OUTPUT_FOLDER}' created successfully."
+    )
     print(f"{Fore.GREEN}You're all set up!")
     print()
-    print(f"{Fore.YELLOW}Usage: simply place your audio files in the '{DEFAULT_INPUT_FOLDER}' folder and `transcribe-me` transcribe and generate summaries in '{DEFAULT_OUTPUT_FOLDER}'.")
+    print(
+        f"{Fore.YELLOW}Usage: simply place your audio files in the '{DEFAULT_INPUT_FOLDER}' folder and `transcribe-me` transcribe and generate summaries in '{DEFAULT_OUTPUT_FOLDER}'."
+    )
+
 
 def append_to_shell_profile(line):
     """
@@ -148,6 +165,7 @@ def append_to_shell_profile(line):
 
     print(f"{Fore.GREEN}API key added to {profile_file}")
 
+
 def load_config() -> Dict[str, Any]:
     """
     Load the configuration from the default config file.
@@ -166,7 +184,9 @@ def load_config() -> Dict[str, Any]:
     except yamale.YamaleError as e:
         print(f"{Fore.RED}Config validation failed:")
         for result in e.results:
-            print(f"{Fore.RED}Error validating data '{result.data}' with '{result.schema}':")
+            print(
+                f"{Fore.RED}Error validating data '{result.data}' with '{result.schema}':"
+            )
             for error in result.errors:
                 print(f"{Fore.RED}\t{error}")
         exit(1)
