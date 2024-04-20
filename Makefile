@@ -56,6 +56,10 @@ tag-release: install
 	git push --tags
 
 bump-prerelease: install
+ifdef CI
+	git config --global user.email "actions@github.com"
+	git config --global user.name "GitHub Actions"
+endif
 	$(VENV) python -m commitizen bump --yes -pr alpha
 	git push --tags
 
