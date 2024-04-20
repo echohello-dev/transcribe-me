@@ -42,9 +42,6 @@ build-image:
 	docker compose build
 	VERSION=$(shell git describe --tags --abbrev=0) docker compose build
 
-bump:
-	$(VENV) python -m commitizen bump || $(VENV) python -m commitizen bump --increment patch
-
 bump-major:
 	$(VENV) python -m commitizen bump --increment major
 
