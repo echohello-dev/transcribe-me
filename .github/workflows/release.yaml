@@ -9,6 +9,9 @@ jobs:
   release:
     runs-on: ubuntu-latest
 
+    env:
+      TWINE_PASSWORD: ${{ secrets.PYPI_PASSWORD }}
+
     steps:
     - uses: actions/checkout@v4
     - uses: asdf-vm/actions/install@v3

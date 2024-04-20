@@ -38,4 +38,3 @@ tag_format = "v$major.$minor.$patch$prerelease"
 update_changelog_on_bump = false
 version_files = ["pyproject.toml:^version"]
 version_scheme = "semver"
-post_bump_hooks = ["python release.py"]

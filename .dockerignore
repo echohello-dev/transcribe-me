@@ -11,5 +11,4 @@ input/
 LICENSE
 output/
 pyproject.toml
-release.py
 venv/
