@@ -52,57 +52,6 @@ build:
 build-image:
 	docker compose build
 
-release-major:
-	$(eval VERSION=$(shell echo "$(LATEST_TAG)" | awk -F'.' '{printf "%d.0.0", $$1 + 1}'))
-ifdef CI
-	git config --global user.email "actions@github.com"
-	git config --global user.name "GitHub Actions"
-endif
-	sed -i '' "s/__version__ = '.*'/__version__ = '$(VERSION)'/g" transcribe_me/__init__.py
-	git add transcribe_me/__init__.py
-	git commit -m "chore: Bump version to $(VERSION)"
-	git tag -a "v$(VERSION)"
-	git push origin main
-	git push --tags
-	git branch --force -D release/$(VERSION)
-	git checkout -b release/$(VERSION)
-	git push --set-upstream origin release/$(VERSION)
-
-release-minor:
-	$(eval VERSION=$(shell echo "$(LATEST_TAG)" | awk -F'.' '{printf "%d.%d.0", $$1, $$2 + 1}'))
-ifdef CI
-	git config --global user.email "actions@github.com"
-	git config --global user.name "GitHub Actions"
-endif
-	sed -i '' "s/__version__ = '.*'/__version__ = '$(VERSION)'/g" transcribe_me/__init__.py
-	git add transcribe_me/__init__.py
-	git commit -m "chore: Bump version to $(VERSION)"
-	git tag -a "v$(VERSION)"
-	git push origin main
-	git push --tags
-	git branch --force -D release/$(VERSION)
-	git checkout -b release/$(VERSION)
-	git push --set-upstream origin release/$(VERSION)
-
-release-patch:
-	$(eval VERSION=$(shell echo "$(LATEST_TAG)" | awk -F'.' '{printf "%d.%d.%d", $$1, $$2, $$3 + 1}'))
-ifdef CI
-	git config --global user.email "actions@github.com"
-	git config --global user.name "GitHub Actions"
-endif
-	sed -i '' "s/__version__ = '.*'/__version__ = '$(VERSION)'/g" transcribe_me/__init__.py
-	git add transcribe_me/__init__.py
-	git commit -m "chore: Bump version to $(VERSION)"
-	git tag -a "v$(VERSION)"
-	git push origin main
-	git push --tags
-	git branch --force -D release/$(VERSION)
-	git checkout -b release/$(VERSION)
-	git push --set-upstream origin release/$(VERSION)
-
-gh-publish-image:
-	gh workflow view prerelease.yaml --web
-
 publish-package:
 	rm -rdf dist
 	$(MAKE) build
@@ -123,3 +72,12 @@ transcribe-archive: install
 
 transcribe-install: install
 	$(VENV) python -m transcribe_me.main install
+
+release-version:
+ifdef CI
+	git config --global user.email "actions@github.com"
+	git config --global user.name "GitHub Actions"
+endif
+	git tag -a "v$(VERSION)"
+	git push origin main
+	git push --tags

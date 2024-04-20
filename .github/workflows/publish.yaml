@@ -1,0 +1,20 @@
+name: Publish
+
+on:
+  push:
+    tags:
+      - 'v*.*.*'
+ 
+jobs:
+  release:
+    permissions:
+      contents: write
+      pull-requests: write
+    runs-on: ubuntu-latest
+
+    env:
+      VERSION: ${{ github.ref_name }}
+
+    steps:
+      - run: make publish-package
+      - run: make publish-image
