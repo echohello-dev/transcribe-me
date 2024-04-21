@@ -9,7 +9,7 @@ on:
 permissions: write-all
 
 jobs:
-  release:
+  publish:
     runs-on: ubuntu-latest
 
     strategy:
