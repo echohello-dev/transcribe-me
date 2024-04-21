@@ -91,11 +91,27 @@ This has been tested with macOS, your mileage may vary on other operating system
 
 You can also run the application using Docker:
 
-1. Run the following command to run the application in Docker:
+1. Install Docker on your machine by following the instructions on the [Docker website](https://docs.docker.com/get-docker/).
+
+2. Create a `.transcribe.yaml` configuration file:
+
+    ```bash
+    touch .transcribe.yaml
+    docker run \
+        --rm \
+        -v $(pwd)/.transcribe.yaml:/app/.transcribe.yaml \
+        ghcr.io/echohello-dev/transcribe-me:latest install
+    ```
+
+
+3. Run the following command to run the application in Docker:
 
     ```bash
     docker run \
         --rm \
+        -e OPENAI_API_KEY \
+        -e ANTHROPIC_API_KEY \
+        -v $(pwd)/archive:/app/archive \
         -v $(pwd)/input:/app/input \
         -v $(pwd)/output:/app/output \
         -v $(pwd)/.transcribe.yaml:/app/.transcribe.yaml \
@@ -104,7 +120,7 @@ You can also run the application using Docker:
 
     This command mounts the `input` and `output` directories and the `.transcribe.yaml` configuration file into the Docker container.
 
-2. (Optional) We can also run the application using the provided `docker-compose.yml` file:
+4. (Optional) We can also run the application using the provided `docker-compose.yml` file:
 
     ```yaml
     version: '3'

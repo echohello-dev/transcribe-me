@@ -9,7 +9,7 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 COPY . .
 
-CMD ["python", "-m", "transcribe_me.main"]
+ENTRYPOINT ["python", "-m", "transcribe_me.main"]
 
 LABEL org.opencontainers.image.source=https://github.com/echohello-dev/transcribe-me
 LABEL org.opencontainers.image.description="The transcriber that uses Anthropic and OpenAI."
