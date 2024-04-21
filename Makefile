@@ -64,7 +64,17 @@ else
 endif
 
 publish-image: login-ghcr
+ifdef CI
+	docker buildx build \
+		-t ghcr.io/echohello-dev/transcribe-me:latest \
+		-t ghcr.io/echohello-dev/transcribe-me:$(VERSION) \
+		--cache-from=type=gha,scope=image \
+		--cache-to=type=gha,mode=max \
+		--platform $(DOCKER_DEFAULT_PLATFORM) \
+		--push .
+else
 	docker compose build --push
+endif
 
 transcribe: install
 	$(VENV) python -m transcribe_me.main
