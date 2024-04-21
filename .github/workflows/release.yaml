@@ -16,6 +16,7 @@ jobs:
 
     env:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      TWINE_PASSWORD: ${{ secrets.PYPI_PASSWORD }}
 
     steps:
       - uses: actions/checkout@v4

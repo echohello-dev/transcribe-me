@@ -209,3 +209,7 @@ output_folder: output
    ```bash
    make install-cli
    ```
+
+## Star History
+
+[![Star History Chart](https://api.star-history.com/svg?repos=echohello-dev/transcribe-me&type=Date)](https://star-history.com/#echohello-dev/transcribe-me&Date)
