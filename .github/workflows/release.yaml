@@ -4,6 +4,11 @@ on:
   push:
     branches:
       - main
+    paths-ignore:
+      - 'docs/**'
+      - '*.md'
+      - LICENSE
+      - '.github/**'
 
 permissions: write-all
 
