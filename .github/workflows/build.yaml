@@ -25,6 +25,8 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-tags: true
       - uses: asdf-vm/actions/install@v3
       - run: make install
       - run: make lint
