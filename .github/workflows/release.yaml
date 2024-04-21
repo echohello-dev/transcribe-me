@@ -21,3 +21,5 @@ jobs:
           publish: true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - run: make publish-package
+      - run: make publish-image

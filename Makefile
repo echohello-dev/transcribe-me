@@ -1,6 +1,6 @@
 VENV := . venv/bin/activate &&
-LATEST_TAG := $(shell git describe --tags --abbrev=0)
-LATEST_VERSION := $(shell git describe --tags)
+TAG := $(shell git describe --tags --abbrev=0)
+VERSION ?= $(shell git describe --tags)
 
 -include .env
 export
