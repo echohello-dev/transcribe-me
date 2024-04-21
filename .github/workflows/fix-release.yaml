@@ -13,6 +13,7 @@ permissions: write-all
 
 env:
   VERSION: ${{ inputs.version }}
+  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
 jobs:
   publish-package:
@@ -20,7 +21,6 @@ jobs:
     continue-on-error: true
 
     env:
-      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       TWINE_PASSWORD: ${{ secrets.PYPI_PASSWORD }}
 
     steps:
@@ -37,7 +37,6 @@ jobs:
         arch: [linux/amd64, linux/arm64]
 
     env:
-      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
     steps:
       - uses: actions/checkout@v4
