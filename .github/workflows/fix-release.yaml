@@ -1,4 +1,5 @@
 name: Fix Release
+run-name: Fix ${{ inputs.version }} Release
 
 on:
   workflow_dispatch:
