@@ -214,6 +214,43 @@ output_folder: output
    make install-cli
    ```
 
+### Workflows
+
+This project uses several GitHub Actions workflows to automate various processes:
+
+- **Build**: Triggered on pushes and pull requests to the `main` branch. It installs dependencies, runs linting, tests, and builds the project.
+
+- **Fix Release**: Manually triggered workflow that allows fixing a specific version release. It publishes the package, Docker image, and updates the release.
+
+- **Publish Latest Image**: Triggered on pushes to the `main` branch. It publishes the latest Docker image for multiple architectures.
+
+- **Pull Request Release**: Triggered when a pull request is opened, reopened, or synchronized. It uses Release Drafter to draft a release based on the pull request.
+
+- **Release**: Triggered on pushes to the `main` branch. It drafts a new release using Release Drafter, publishes the package and Docker image, and publishes the drafted release.
+
+### Releasing a New Version
+
+This project uses [Release Drafter](https://github.com/release-drafter/release-drafter) to automatically generate release notes and determine the version number based on the labels of merged pull requests.
+
+To release a new version:
+
+1. Ensure that your pull request has one of the following labels:
+   - `major`: For a major version bump (e.g., 1.0.0 -> 2.0.0)
+   - `minor`: For a minor version bump (e.g., 1.0.0 -> 1.1.0)
+   - `patch`: For a patch version bump (e.g., 1.0.0 -> 1.0.1)
+
+   If no label is provided, the default behavior is to bump the patch version.
+
+2. Merge the pull request into the `main` branch.
+
+3. The "Release" workflow will automatically trigger and perform the following steps:
+   - Draft a new release using Release Drafter, determining the version number based on the merged pull request labels.
+   - Publish the package to PyPI.
+   - Publish the Docker image for multiple architectures.
+   - Publish the drafted release on GitHub.
+
+4. If there are any issues with the release, you can manually trigger the "Fix Release" workflow and provide the version number to fix the release.
+
 ## Star History
 
 [![Star History Chart](https://api.star-history.com/svg?repos=echohello-dev/transcribe-me&type=Date)](https://star-history.com/#echohello-dev/transcribe-me&Date)
