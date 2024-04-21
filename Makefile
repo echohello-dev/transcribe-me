@@ -52,6 +52,8 @@ build:
 build-image:
 	docker compose build
 
+publish: publish-package publish-image
+
 publish-package:
 	rm -rdf dist
 	$(MAKE) build

@@ -14,12 +14,15 @@ jobs:
   release:
     runs-on: ubuntu-latest
 
+    env:
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
     steps:
       - uses: release-drafter/release-drafter@v5
+        id: drafter
         with:
           version: ${{ github.ref_name }}
           publish: true
+      - run: make publish
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      - run: make publish-package
-      - run: make publish-image
+          VERSION: ${{ steps.drafter.outputs.tag_name }}
