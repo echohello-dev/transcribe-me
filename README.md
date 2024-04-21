@@ -30,6 +30,8 @@ Tool has been tested with Python 3.12.
 
 ### macOS
 
+This has been tested with macOS, your mileage may vary on other operating systems like Windows, WSL or Linux.
+
 1. Install Python. Recommended way is to use [asdf](https://asdf-vm.com/guide/getting-started.html):
 
     ```bash
