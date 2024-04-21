@@ -1,5 +1,9 @@
 # Transcribe Me
 
+[![Release](https://github.com/echohello-dev/transcribe-me/actions/workflows/release.yaml/badge.svg?branch=main)](https://github.com/echohello-dev/transcribe-me/actions/workflows/release.yaml)
+
+[![Build](https://github.com/echohello-dev/transcribe-me/actions/workflows/build.yaml/badge.svg)](https://github.com/echohello-dev/transcribe-me/actions/workflows/build.yaml)
+
 Transcribe Me is a CLI-driven Python application that transcribes audio files using the OpenAI Whisper API and generates summaries of the transcriptions using both OpenAI's GPT-4 and Anthropic's Claude models.
 
 ```mermaid
