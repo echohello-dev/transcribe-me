@@ -1,7 +1,7 @@
 version: '3'
 services:
   app:
-    image: ghcr.io/echohello-dev/transcribe-me:latest
+    image: ghcr.io/echohello-dev/transcribe-me:${VERSION:-latest}
     build: .
     volumes:
       - ./input:/app/input
