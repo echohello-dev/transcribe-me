@@ -19,6 +19,7 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
+      - uses: asdf-vm/actions/install@v3
       - uses: release-drafter/release-drafter@v5
         id: drafter
         with:
