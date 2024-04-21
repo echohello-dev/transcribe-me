@@ -137,13 +137,15 @@ You can also run the application using Docker:
           - ./.transcribe.yaml:/app/.transcribe.yaml
     ```
 
-   Run the following command to start the application using Docker Compose:
+    Run the following command to start the application using Docker Compose:
 
-   ```bash
-   docker compose run --rm app
-   ```
+    ```bash
+    docker compose run --rm transcribe-me
+    ```
 
-   This command mounts the `input`, `output`, `archive`, and `.transcribe.yaml` configuration file into the Docker container. See [`compose.example.yaml`](./compose.example.yaml) for an example configuration.
+    This command mounts the `input`, `output`, `archive`, and `.transcribe.yaml` configuration file into the Docker container. See [`compose.example.yaml`](./compose.example.yaml) for an example configuration.
+
+    Make sure to replace `OPENAI_API_KEY` and `ANTHROPIC_API_KEY` with your actual API keys. Also make sure to create the `.transcribe.yaml` configuration file in the same directory as the `docker-compose.yml` file.
 
 ## :rocket: How it Works
 
