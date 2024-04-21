@@ -68,10 +68,11 @@ ifdef CI
 	docker buildx build \
 		-t ghcr.io/echohello-dev/transcribe-me:latest \
 		-t ghcr.io/echohello-dev/transcribe-me:$(VERSION) \
-		--cache-from=type=gha,scope=image \
-		--cache-to=type=gha,mode=max \
+		--cache-to "type=gha,mode=max" \
+		--cache-from type=gha \
 		--platform $(DOCKER_DEFAULT_PLATFORM) \
-		--push .
+		--push \
+		.
 else
 	docker compose build --push
 endif
