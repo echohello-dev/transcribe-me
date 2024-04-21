@@ -56,10 +56,6 @@ version-resolver:
       - 'patch'
   default: patch
 template: |
-  ## :rocket: What's Changed
-
-  [:books: `Compare Previous Release`](https://github.com/$OWNER/$REPOSITORY/compare/$PREVIOUS_TAG...$RESOLVED_VERSION)
-
   $CHANGES
 
   ## :writing_hand: Contributors
@@ -67,3 +63,5 @@ template: |
   Thanks to everyone who contributed to this release!
 
   $CONTRIBUTORS
+
+  [:books: `Compare Previous Release`](https://github.com/$OWNER/$REPOSITORY/compare/$PREVIOUS_TAG...$RESOLVED_VERSION)
