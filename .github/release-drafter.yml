@@ -1,15 +1,38 @@
 name-template: '$RESOLVED_VERSION'
 tag-template: '$RESOLVED_VERSION'
+autolabeler:
+  - label: 'chore'
+    files:
+      - '*'
+    body:
+      - '/.*/'
+  - label: 'bugfix'
+    body:
+      - '/fix/i'
+      - '/hotfix/i'
+    body:
+      - '/fix/i'
+      - '/hotfix/i'
+      - '/bug/i'
+      - '/broken/i'
+  - label: 'feature'
+    branch:
+      - '/feature/i'
+      - '/feat/i'
+    body:
+      - '/feature/i'
+      - '/feat/i'
+      - '/refactor/i'
+      - '/enhancement/i'
+      - '/improve/i'
+      - '/revamp/i'
 categories:
   - title: '🚀 Features'
     labels:
       - 'feature'
-      - 'enhancement'
   - title: '🐛 Bug Fixes'
     labels:
-      - 'fix'
       - 'bugfix'
-      - 'bug'
   - title: '🧰 Maintenance'
     label: 'chore'
 change-template: '- $TITLE @$AUTHOR (#$NUMBER)'
