@@ -26,13 +26,13 @@ version-resolver:
       - 'patch'
   default: patch
 template: |
-  ## What's Changed
+  ## :rocket: What's Changed
 
   [:books: `Compare from $PREVIOUS_TAG`](https://github.com/$OWNER/$REPOSITORY/compare/$PREVIOUS_TAG...$CURRENT_TAG)
 
   $CHANGES
 
-  ## Contributors
+  ## :writing_hand: Contributors
 
   Thanks to everyone who contributed to this release!
 
