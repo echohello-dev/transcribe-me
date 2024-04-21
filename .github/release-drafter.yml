@@ -28,7 +28,7 @@ version-resolver:
 template: |
   ## :rocket: What's Changed
 
-  [:books: `Compare from $PREVIOUS_TAG`](https://github.com/$OWNER/$REPOSITORY/compare/$PREVIOUS_TAG...$CURRENT_TAG)
+  [:books: `Compare Previous Release`](https://github.com/$OWNER/$REPOSITORY/compare/$PREVIOUS_TAG...$RESOLVED_VERSION)
 
   $CHANGES
 
