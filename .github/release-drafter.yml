@@ -28,6 +28,8 @@ version-resolver:
 template: |
   ## What's Changed
 
+  [:books: `Compare from $PREVIOUS_TAG`](https://github.com/$OWNER/$REPOSITORY/compare/$PREVIOUS_TAG...$CURRENT_TAG)
+
   $CHANGES
 
   ## Contributors
@@ -35,5 +37,3 @@ template: |
   Thanks to everyone who contributed to this release!
 
   $CONTRIBUTORS
-
-  [:books: `Compare from $PREVIOUS_TAG`](https://github.com/$OWNER/$REPOSITORY/compare/$PREVIOUS_TAG...$CURRENT_TAG)
