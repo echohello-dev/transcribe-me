@@ -4,11 +4,12 @@ RUN apt-get update && apt-get install -y ffmpeg
 
 WORKDIR /app
 
-COPY . .
-
+COPY requirements.txt ./
 RUN pip install --no-cache-dir -r requirements.txt
 
-CMD ["python", "/app/transcribe_me/main.py"]
+COPY . .
+
+ENTRYPOINT ["python", "-m", "transcribe_me.main"]
 
 LABEL org.opencontainers.image.source=https://github.com/echohello-dev/transcribe-me
 LABEL org.opencontainers.image.description="The transcriber that uses Anthropic and OpenAI."
