@@ -3,11 +3,18 @@ tag-template: '$RESOLVED_VERSION'
 autolabeler:
   - label: 'chore'
     files:
-      - '*'
+      - '*.md'
+      - 'docs/**'
+      - '.github/**'
+    branch:
+      - '/docs/i'
+      - '/documentation/i'
     body:
-      - '/.*/'
+      - '/ci/i'
+      - '/docs/i'
+      - '/readme/i'
   - label: 'bugfix'
-    body:
+    branch:
       - '/fix/i'
       - '/hotfix/i'
     body:
@@ -33,7 +40,7 @@ categories:
   - title: '🐛 Bug Fixes'
     labels:
       - 'bugfix'
-  - title: '🧰 Maintenance'
+  - title: '🧹 Chores'
     label: 'chore'
 change-template: '- $TITLE @$AUTHOR (#$NUMBER)'
 change-title-escapes: '\<*_&' # You can add # and @ to disable mentions, and add ` to disable code blocks.
