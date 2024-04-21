@@ -16,12 +16,14 @@ jobs:
     outputs:
       tag_name: ${{ steps.drafter.outputs.tag_name }}
 
+    env:
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
     steps:
       - uses: release-drafter/release-drafter@v5
         id: drafter
         with:
-          version: ${{ github.ref_name }}
-          publish: true
+          publish: false
 
   publish:
     runs-on: ubuntu-latest
@@ -37,3 +39,6 @@ jobs:
       - run: make publish
         env:
           VERSION: ${{ needs.release.outputs.tag_name }}
+      - uses: release-drafter/release-drafter@v5
+        with:
+          publish: true
