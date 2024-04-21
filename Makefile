@@ -52,9 +52,9 @@ build:
 build-image:
 	docker compose build
 
-publish: install publish-package publish-image
+publish: publish-package publish-image
 
-publish-package:
+publish-package: install
 	rm -rdf dist
 	$(MAKE) build
 ifdef DRY_RUN
@@ -63,7 +63,7 @@ else
 	$(VENV) python -m twine upload dist/*
 endif
 
-publish-image: login-ghcr
+publish-image: install login-ghcr
 ifdef CI
 	docker buildx build \
 		-t ghcr.io/echohello-dev/transcribe-me:latest \
