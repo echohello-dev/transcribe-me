@@ -1,0 +1,22 @@
+name: Version
+
+on:
+  push:
+    branches:
+      - main
+    paths-ignore:
+      - 'docs/**'
+      - '*.md'
+      - LICENSE
+      - '.github/**'
+
+permissions: write-all
+
+jobs:
+  version:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: release-drafter/release-drafter@v5
+        with:
+          publish: true
