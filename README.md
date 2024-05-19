@@ -87,6 +87,12 @@ This has been tested with macOS, your mileage may vary on other operating system
    transcribe-me archive
    ```
 
+5. (Optional) You can also transcribe only the audio files that have not been transcribed yet:
+
+    ```bash
+    transcribe-me only
+    ```
+
 ### Docker
 
 You can also run the application using Docker:

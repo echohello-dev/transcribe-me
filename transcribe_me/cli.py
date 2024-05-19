@@ -11,7 +11,7 @@ def parse_arguments():
     parser.add_argument(
         "command",
         nargs="?",
-        choices=["install", "archive"],
+        choices=["install", "archive", "only"],
         help="Install the configuration file or archive files.",
     )
     parser.add_argument(
@@ -38,6 +38,10 @@ def main():
 
     if args.command == "archive":
         config_manager.archive_files(args.input, args.output)
+        return
+
+    if args.command == "only":
+        transcription.process_audio_files(input_folder, output_folder, config)
         return
 
     config = config_manager.load_config()
