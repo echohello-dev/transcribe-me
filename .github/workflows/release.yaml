@@ -7,9 +7,6 @@ on:
 
 permissions: write-all
 
-env:
-  VERSION: ${{ github.ref_name }}
-
 jobs:
   publish-package:
     runs-on: ubuntu-latest
