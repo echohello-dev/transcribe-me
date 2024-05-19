@@ -40,14 +40,14 @@ def main():
         config_manager.archive_files(args.input, args.output)
         return
 
-    if args.command == "only":
-        transcription.process_audio_files(input_folder, output_folder, config)
-        return
-
     config = config_manager.load_config()
 
     input_folder = args.input
     output_folder = args.output
+
+    if args.command == "only":
+        transcription.process_audio_files(input_folder, output_folder, config)
+        return
 
     transcription.process_audio_files(input_folder, output_folder, config)
     summarizer.generate_summaries(input_folder, output_folder, config)
