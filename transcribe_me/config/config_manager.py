@@ -173,7 +173,7 @@ def load_config() -> Dict[str, Any]:
     Returns:
         dict: The loaded configuration.
     """
-    schema_file = os.path.join(os.path.dirname(__file__), "schemas/transcribe.yaml")
+    schema_file = os.path.join(os.path.dirname(__file__), "schema.yaml")
     config_file = DEFAULT_CONFIG_FILE
 
     try:

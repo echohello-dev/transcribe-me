@@ -30,7 +30,15 @@ dependencies = [
 "Bug Tracker" = "https://github.com/echohello-dev/transcribe-me/issues"
 
 [tool.setuptools]
-packages = ["transcribe_me"]
+packages = [
+    "transcribe_me",
+    "transcribe_me.config",
+    "transcribe_me.audio",
+    "transcribe_me.summarization",
+]
+
+[tool.setuptools.package-data]
+"transcribe_me.config" = ["*.yaml"]
 
 [tool.setuptools.dynamic]
 version = { attr = "transcribe_me.__version__" }

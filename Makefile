@@ -1,3 +1,5 @@
+.PHONY: build
+
 VENV := . venv/bin/activate &&
 TAG := $(shell git describe --tags --abbrev=0)
 VERSION ?= $(shell git describe --tags --always)
