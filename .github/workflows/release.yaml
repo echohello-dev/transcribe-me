@@ -8,7 +8,7 @@ on:
 permissions: write-all
 
 env:
-  VERSION: ${{ github.ref }}
+  VERSION: ${{ github.ref_name }}
 
 jobs:
   publish-package:
