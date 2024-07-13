@@ -69,4 +69,4 @@ typing_extensions==4.10.0
 urllib3==2.2.1
 wcwidth==0.2.13
 yamale==5.1.0
-zipp==3.18.1
+zipp==3.19.1
