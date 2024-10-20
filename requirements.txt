@@ -1,5 +1,4 @@
 annotated-types==0.6.0
-anthropic==0.21.3
 anyio==4.4.0
 argcomplete==3.2.3
 assemblyai==0.34.0

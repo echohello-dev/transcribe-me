@@ -21,8 +21,6 @@ dependencies = [
   "halo",
   "yamale",
   "tenacity",
-  "openai",
-  "anthropic",
 ]
 
 [project.urls]

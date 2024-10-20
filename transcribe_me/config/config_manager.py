@@ -8,7 +8,6 @@ import yamale
 from colorama import Fore
 
 OPENAI_API_KEY = os.environ.get("OPENAI_API_KEY")
-ANTHROPIC_API_KEY = os.environ.get("ANTHROPIC_API_KEY")
 ASSEMBLYAI_API_KEY = os.environ.get("ASSEMBLYAI_API_KEY")
 
 DEFAULT_OUTPUT_FOLDER = "output"
@@ -65,62 +64,6 @@ def install_config() -> None:
 
     config = {
         "use_assemblyai": False,
-        "openai": {
-            "models": [
-                {
-                    "temperature": 0.1,
-                    "max_tokens": 2048,
-                    "model": "gpt-4",
-                    "system_prompt": """
-Generate a summary with key points in bold and a Next Steps section, use Markdown, be a concise tech expert but kind to non-technical readers.
-""",
-                },
-                {
-                    "temperature": 0.3,
-                    "max_tokens": 2048,
-                    "model": "gpt-4",
-                    "system_prompt": """
-Generate a summary with key points in bold and a Next Steps section, use Markdown, be a concise tech expert but kind to non-technical readers.
-""",
-                },
-                {
-                    "temperature": 0.5,
-                    "max_tokens": 2048,
-                    "model": "gpt-4",
-                    "system_prompt": """
-Generate a summary with key points in bold and a Next Steps section, use Markdown, be a concise tech expert but kind to non-technical readers.
-""",
-                },
-            ]
-        },
-        "anthropic": {
-            "models": [
-                {
-                    "temperature": 0.1,
-                    "max_tokens": 2048,
-                    "model": "claude-3-sonnet-20240229",
-                    "system_prompt": """
-Generate a summary with key points in bold and a Next Steps section, use Markdown, be a concise tech expert but kind to non-technical readers.
-""",
-                },
-                {
-                    "temperature": 0.3,
-                    "max_tokens": 2048,
-                    "model": "claude-3-sonnet-20240229",
-                    "system_prompt": """
-Generate a summary with key points in bold and a Next Steps section, use Markdown, be a concise tech expert but kind to non-technical readers.
-""",
-                },
-                {
-                    "temperature": 0.5,
-                    "max_tokens": 2048,
-                    "model": "claude-3-sonnet-20240229",
-                    "system_prompt": """
-Generate a summary with key points in bold and a Next Steps section, use Markdown, be a concise tech expert but kind to non-technical readers.
-""",
-                },
-            ]
-        },
         "input_folder": DEFAULT_INPUT_FOLDER,
         "output_folder": DEFAULT_OUTPUT_FOLDER,
     }
@@ -132,14 +75,6 @@ Generate a summary with key points in bold and a Next Steps section, use Markdow
         openai_key = input(f"{Fore.CYAN}Enter your OpenAI API key: ")
         os.environ["OPENAI_API_KEY"] = openai_key
         append_to_shell_profile(f"export OPENAI_API_KEY={openai_key}")
-
-    if not ANTHROPIC_API_KEY:
-        print(
-            f"{Fore.YELLOW}Looks like you haven't set your Anthropic API key. We'll set it up for you."
-        )
-        anthropic_key = input(f"{Fore.CYAN}Enter your Anthropic API key: ")
-        os.environ["ANTHROPIC_API_KEY"] = anthropic_key
-        append_to_shell_profile(f"export ANTHROPIC_API_KEY={anthropic_key}")
 
     if not ASSEMBLYAI_API_KEY:
         print(
