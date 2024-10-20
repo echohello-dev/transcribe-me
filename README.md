@@ -4,7 +4,7 @@
 
 [![Build](https://github.com/echohello-dev/transcribe-me/actions/workflows/build.yaml/badge.svg)](https://github.com/echohello-dev/transcribe-me/actions/workflows/build.yaml)
 
-Transcribe Me is a CLI-driven Python application that transcribes audio files using either the OpenAI Whisper API or AssemblyAI, and generates summaries of the transcriptions using OpenAI's GPT-4 and Anthropic's Claude models.
+Transcribe Me is a CLI-driven Python application that transcribes audio files using either the OpenAI Whisper API or AssemblyAI.
 
 ```mermaid
 graph TD
@@ -14,11 +14,9 @@ graph TD
     D --Yes--> E[Transcribe with AssemblyAI]
     D --No--> F[Transcribe with OpenAI]
     E --> G[Generate Additional Outputs]
-    F --> H[Generate Summaries]
-    G --> I[Save Transcription and Outputs]
-    H --> J[Save Transcription and Summaries]
+    F --> I[Save Transcription]
+    G --> I
     I --> K[Clean Up Temporary Files]
-    J --> K
     K --> B
     C --No--> L[Print Warning]
     L --> B
@@ -27,9 +25,7 @@ graph TD
 ## :key: Key Features
 
 - **Audio Transcription**: Transcribes audio files using either the OpenAI Whisper API or AssemblyAI. It supports both MP3 and M4A formats.
-- **Summary Generation**: Generates summaries of the transcriptions using both OpenAI's GPT-4 and Anthropic's Claude models when using OpenAI for transcription.
 - **AssemblyAI Features**: When using AssemblyAI, provides additional outputs including Speaker Diarization, Summary, Sentiment Analysis, Key Phrases, and Topic Detection.
-- **Configurable Models**: Supports multiple models for OpenAI and Anthropic, with configurable temperature, max_tokens, and system prompts.
 - **Supports Audio Files**: Supports audio files in `.m4a` and `.mp3` formats.
 - **Supports Docker**: Can be run in a Docker container for easy deployment and reproducibility.
 
@@ -70,11 +66,10 @@ This has been tested with macOS, your mileage may vary on other operating system
     transcribe-me install
     ```
 
-    This command will prompt you to enter your API keys for OpenAI, Anthropic, and AssemblyAI if they are not already provided in environment variables. You can also set the API keys in environment variables:
+    This command will prompt you to enter your API keys for OpenAI and AssemblyAI if they are not already provided in environment variables. You can also set the API keys in environment variables:
 
     ```bash
     export OPENAI_API_KEY=your_api_key
-    export ANTHROPIC_API_KEY=your_api_key
     export ASSEMBLYAI_API_KEY=your_api_key
     ```
 
@@ -85,19 +80,13 @@ This has been tested with macOS, your mileage may vary on other operating system
    transcribe-me
    ```
 
-   The application will transcribe each audio file in the input directory and save the transcriptions to the output directory. It will also generate summaries of the transcriptions using the configured models and save them to the output directory.
+   The application will transcribe each audio file in the input directory and save the transcriptions to the output directory.
 
 4. (Optional) You can archive the input directory to keep track of the processed audio files:
 
    ```bash
    transcribe-me archive
    ```
-
-5. (Optional) You can also transcribe only the audio files that have not been transcribed yet:
-
-    ```bash
-    transcribe-me only
-    ```
 
 ### Docker
 
@@ -115,14 +104,12 @@ You can also run the application using Docker:
         ghcr.io/echohello-dev/transcribe-me:latest install
     ```
 
-
 3. Run the following command to run the application in Docker:
 
     ```bash
     docker run \
         --rm \
         -e OPENAI_API_KEY \
-        -e ANTHROPIC_API_KEY \
         -e ASSEMBLYAI_API_KEY \
         -v $(pwd)/archive:/app/archive \
         -v $(pwd)/input:/app/input \
@@ -142,7 +129,6 @@ You can also run the application using Docker:
         image: ghcr.io/echohello-dev/transcribe-me:latest
         environment:
           - OPENAI_API_KEY
-          - ANTHROPIC_API_KEY
           - ASSEMBLYAI_API_KEY
         volumes:
           - ./input:/app/input
@@ -159,13 +145,13 @@ You can also run the application using Docker:
 
     This command mounts the `input`, `output`, `archive`, and `.transcribe.yaml` configuration file into the Docker container. See [`compose.example.yaml`](./compose.example.yaml) for an example configuration.
 
-    Make sure to replace `OPENAI_API_KEY`, `ANTHROPIC_API_KEY`, and `ASSEMBLYAI_API_KEY` with your actual API keys. Also make sure to create the `.transcribe.yaml` configuration file in the same directory as the `docker-compose.yml` file.
+    Make sure to replace `OPENAI_API_KEY` and `ASSEMBLYAI_API_KEY` with your actual API keys. Also make sure to create the `.transcribe.yaml` configuration file in the same directory as the `docker-compose.yml` file.
 
 ## :rocket: How it Works
 
 The Transcribe Me application follows a straightforward workflow:
 
-1. **Load Configuration**: The application loads the configuration from the `.transcribe.yaml` file, which includes settings for input/output directories, models, and their configurations.
+1. **Load Configuration**: The application loads the configuration from the `.transcribe.yaml` file, which includes settings for input/output directories and transcription service.
 2. **Get Audio Files**: The application gets a list of audio files from the input directory specified in the configuration.
 3. **Check Existing Transcriptions**: For each audio file, the application checks if there is an existing transcription file. If a transcription file exists, it skips to the next audio file.
 4. **Transcribe Audio File**: If no transcription file exists, the application transcribes the audio file using either the OpenAI Whisper API or AssemblyAI, based on the configuration.
@@ -184,19 +170,6 @@ Here is an example configuration file:
 
 ```yaml
 use_assemblyai: false  # Set to true to use AssemblyAI instead of OpenAI for transcription
-
-openai:
-  models:
-    - temperature: 0.1
-      max_tokens: 2048
-      model: gpt-4
-      system_prompt: Generate a summary with key points in bold and a Next Steps section, use Markdown, be a concise tech expert but kind to non-technical readers.
-
-anthropic:
-  models:
-    - temperature: 0.8
-      model: claude-3-sonnet-20240229
-      system_prompt: Generate something creative and interesting, use Markdown, be a concise tech expert but kind to non-technical readers.
 
 input_folder: input
 output_folder: output
@@ -236,7 +209,7 @@ output_folder: output
    make install
    ```
 
-3. Run the `transcribe-me install` command to create the `.transcribe.yaml` configuration file and provide your API keys for OpenAI, Anthropic, and AssemblyAI:
+3. Run the `transcribe-me install` command to create the `.transcribe.yaml` configuration file and provide your API keys for OpenAI and AssemblyAI:
 
    ```bash
    make transcribe-install
