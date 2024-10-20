@@ -9,6 +9,7 @@ from colorama import Fore
 
 OPENAI_API_KEY = os.environ.get("OPENAI_API_KEY")
 ANTHROPIC_API_KEY = os.environ.get("ANTHROPIC_API_KEY")
+ASSEMBLYAI_API_KEY = os.environ.get("ASSEMBLYAI_API_KEY")
 
 DEFAULT_OUTPUT_FOLDER = "output"
 DEFAULT_INPUT_FOLDER = "input"
@@ -62,41 +63,67 @@ def install_config() -> None:
         f"{Fore.YELLOW}This will create a configuration file and input/output folders in the current directory."
     )
 
-    config = {"openai": {"models": [{"temperature": 0.1,
-                                     "max_tokens": 2048,
-                                     "model": "gpt-4",
-                                     "system_prompt": "Generate a summary with key points in bold and a Next Steps section, use Markdown, be a concise tech expert but kind to non-technical readers.",
-                                     },
-                                    {"temperature": 0.3,
-                                     "max_tokens": 2048,
-                                     "model": "gpt-4",
-                                     "system_prompt": "Generate a summary with key points in bold and a Next Steps section, use Markdown, be a concise tech expert but kind to non-technical readers.",
-                                     },
-                                    {"temperature": 0.5,
-                                     "max_tokens": 2048,
-                                     "model": "gpt-4",
-                                     "system_prompt": "Generate a summary with key points in bold and a Next Steps section, use Markdown, be a concise tech expert but kind to non-technical readers.",
-                                     },
-                                    ]},
-              "anthropic": {"models": [{"temperature": 0.1,
-                                        "max_tokens": 2048,
-                                        "model": "claude-3-sonnet-20240229",
-                                        "system_prompt": "Generate a summary with key points in bold and a Next Steps section, use Markdown, be a concise tech expert but kind to non-technical readers.",
-                                        },
-                                       {"temperature": 0.3,
-                                        "max_tokens": 2048,
-                                        "model": "claude-3-sonnet-20240229",
-                                        "system_prompt": "Generate a summary with key points in bold and a Next Steps section, use Markdown, be a concise tech expert but kind to non-technical readers.",
-                                        },
-                                       {"temperature": 0.5,
-                                        "max_tokens": 2048,
-                                        "model": "claude-3-sonnet-20240229",
-                                        "system_prompt": "Generate a summary with key points in bold and a Next Steps section, use Markdown, be a concise tech expert but kind to non-technical readers.",
-                                        },
-                                       ]},
-              "input_folder": DEFAULT_INPUT_FOLDER,
-              "output_folder": DEFAULT_OUTPUT_FOLDER,
-              }
+    config = {
+        "use_assemblyai": False,
+        "openai": {
+            "models": [
+                {
+                    "temperature": 0.1,
+                    "max_tokens": 2048,
+                    "model": "gpt-4",
+                    "system_prompt": """
+Generate a summary with key points in bold and a Next Steps section, use Markdown, be a concise tech expert but kind to non-technical readers.
+""",
+                },
+                {
+                    "temperature": 0.3,
+                    "max_tokens": 2048,
+                    "model": "gpt-4",
+                    "system_prompt": """
+Generate a summary with key points in bold and a Next Steps section, use Markdown, be a concise tech expert but kind to non-technical readers.
+""",
+                },
+                {
+                    "temperature": 0.5,
+                    "max_tokens": 2048,
+                    "model": "gpt-4",
+                    "system_prompt": """
+Generate a summary with key points in bold and a Next Steps section, use Markdown, be a concise tech expert but kind to non-technical readers.
+""",
+                },
+            ]
+        },
+        "anthropic": {
+            "models": [
+                {
+                    "temperature": 0.1,
+                    "max_tokens": 2048,
+                    "model": "claude-3-sonnet-20240229",
+                    "system_prompt": """
+Generate a summary with key points in bold and a Next Steps section, use Markdown, be a concise tech expert but kind to non-technical readers.
+""",
+                },
+                {
+                    "temperature": 0.3,
+                    "max_tokens": 2048,
+                    "model": "claude-3-sonnet-20240229",
+                    "system_prompt": """
+Generate a summary with key points in bold and a Next Steps section, use Markdown, be a concise tech expert but kind to non-technical readers.
+""",
+                },
+                {
+                    "temperature": 0.5,
+                    "max_tokens": 2048,
+                    "model": "claude-3-sonnet-20240229",
+                    "system_prompt": """
+Generate a summary with key points in bold and a Next Steps section, use Markdown, be a concise tech expert but kind to non-technical readers.
+""",
+                },
+            ]
+        },
+        "input_folder": DEFAULT_INPUT_FOLDER,
+        "output_folder": DEFAULT_OUTPUT_FOLDER,
+    }
 
     if not OPENAI_API_KEY:
         print(
@@ -114,6 +141,14 @@ def install_config() -> None:
         os.environ["ANTHROPIC_API_KEY"] = anthropic_key
         append_to_shell_profile(f"export ANTHROPIC_API_KEY={anthropic_key}")
 
+    if not ASSEMBLYAI_API_KEY:
+        print(
+            f"{Fore.YELLOW}Looks like you haven't set your AssemblyAI API key. We'll set it up for you."
+        )
+        assemblyai_key = input(f"{Fore.CYAN}Enter your AssemblyAI API key: ")
+        os.environ["ASSEMBLYAI_API_KEY"] = assemblyai_key
+        append_to_shell_profile(f"export ASSEMBLYAI_API_KEY={assemblyai_key}")
+
     with open(DEFAULT_CONFIG_FILE, "w") as f:
         yaml.dump(config, f, sort_keys=False)
 
@@ -130,7 +165,10 @@ def install_config() -> None:
     print(f"{Fore.GREEN}You're all set up!")
     print()
     print(
-        f"{Fore.YELLOW}Usage: simply place your audio files in the '{DEFAULT_INPUT_FOLDER}' folder and `transcribe-me` transcribe and generate summaries in '{DEFAULT_OUTPUT_FOLDER}'."
+        f"""
+{Fore.YELLOW}Usage: simply place your audio files in the '{DEFAULT_INPUT_FOLDER}' folder and `transcribe-me`
+ transcribe and generate summaries in '{DEFAULT_OUTPUT_FOLDER}'.
+"""
     )
 
 

@@ -8,7 +8,7 @@ VERSION ?= $(shell git describe --tags --always)
 export
 
 init:
-	cp .env.example .env
+	cp .env.dev .env
 
 check-ffmpeg:
 ifeq (, $(shell which ffmpeg))
@@ -79,13 +79,13 @@ else
 	docker compose build --push
 endif
 
-transcribe: install
+transcribe:
 	$(VENV) python -m transcribe_me.main
 
-transcribe-archive: install
+transcribe-archive:
 	$(VENV) python -m transcribe_me.main archive
 
-transcribe-install: install
+transcribe-install:
 	$(VENV) python -m transcribe_me.main install
 
 release-version:

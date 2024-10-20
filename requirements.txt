@@ -2,7 +2,9 @@ annotated-types==0.6.0
 anthropic==0.21.3
 anyio==4.4.0
 argcomplete==3.2.3
+assemblyai==0.34.0
 astroid==3.1.0
+autopep8==2.3.1
 black==24.4.0
 build==1.2.1
 certifi==2024.7.4
@@ -72,5 +74,6 @@ twine==5.0.0
 typing_extensions==4.10.0
 urllib3==2.2.1
 wcwidth==0.2.13
+websockets==13.1
 yamale==5.1.0
 zipp==3.19.1

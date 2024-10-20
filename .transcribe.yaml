@@ -1,3 +1,5 @@
+use_assemblyai: true
+
 openai:
   models:
   - temperature: 0.1

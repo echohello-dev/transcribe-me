@@ -1,3 +1,4 @@
+use_assemblyai: bool()
 openai:
   models: list(include('model'), min=1)
 anthropic:
