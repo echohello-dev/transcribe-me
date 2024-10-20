@@ -86,7 +86,6 @@ def transcribe_with_assemblyai(
         speaker_labels=True,
         summarization=True,
         sentiment_analysis=True,
-        auto_highlights=True,
         iab_categories=True,
     )
     transcriber = aai.Transcriber()
@@ -115,13 +114,6 @@ def transcribe_with_assemblyai(
             file.write(f"Sentiment: {result.sentiment}\n")
             file.write(f"Confidence: {result.confidence}\n")
             file.write(f"Timestamp: {result.start} - {result.end}\n\n")
-
-    # Key Phrases
-    with open(f"{base_name}_key_phrases.txt", "w", encoding="utf-8") as file:
-        for phrase in transcript.auto_highlights_result.results:
-            file.write(f"Highlight: {phrase.text}\n")
-            file.write(f"Count: {phrase.count}\n")
-            file.write(f"Rank: {phrase.rank}\n")
 
     # Topic Detection
     if transcript.iab_categories:
