@@ -104,29 +104,24 @@ def transcribe_with_assemblyai(
     with open(f"{base_name}_speakers.txt", "w", encoding="utf-8") as file:
         for utterance in transcript.utterances:
             file.write(f"Speaker {utterance.speaker}: {utterance.text}\n")
-
-    # Auto Highlights
-    with open(f"{base_name}_auto_highlights.txt", "w", encoding="utf-8") as file:
-        for highlight in transcript.auto_highlights_result.results:
-            file.write(f"{highlight.text}\n")
-
     # Summary
     with open(f"{base_name}_summary.txt", "w", encoding="utf-8") as file:
         file.write(transcript.summary)
 
     # Sentiment Analysis
-    if transcript.sentiment_analysis:
-        with open(f"{base_name}_sentiment.txt", "w", encoding="utf-8") as file:
-            for result in transcript.sentiment_analysis:
-                file.write(f"Text: {result.text}\n")
-                file.write(f"Sentiment: {result.sentiment}\n")
-                file.write(f"Confidence: {result.confidence}\n")
-                file.write(f"Timestamp: {result.start} - {result.end}\n\n")
+    with open(f"{base_name}_sentiment.txt", "w", encoding="utf-8") as file:
+        for result in transcript.sentiment_analysis:
+            file.write(f"Text: {result.text}\n")
+            file.write(f"Sentiment: {result.sentiment}\n")
+            file.write(f"Confidence: {result.confidence}\n")
+            file.write(f"Timestamp: {result.start} - {result.end}\n\n")
 
     # Key Phrases
     with open(f"{base_name}_key_phrases.txt", "w", encoding="utf-8") as file:
         for phrase in transcript.auto_highlights_result.results:
-            file.write(f"{phrase.text}\n")
+            file.write(f"Highlight: {phrase.text}\n")
+            file.write(f"Count: {phrase.count}\n")
+            file.write(f"Rank: {phrase.rank}\n")
 
     # Topic Detection
     if transcript.iab_categories:
