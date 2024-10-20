@@ -82,6 +82,7 @@ def transcribe_with_assemblyai(
     Transcribe an audio file using AssemblyAI.
     """
     transcription_config = aai.TranscriptionConfig(
+        speech_model=aai.SpeechModel.nano,
         speaker_labels=True,
         summarization=True,
         sentiment_analysis=True,
