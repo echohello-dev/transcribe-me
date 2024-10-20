@@ -1,6 +1,6 @@
 import argparse
 from transcribe_me.config import config_manager
-from transcribe_me.audio import transcription, splitting
+from transcribe_me.audio import transcription
 from transcribe_me.summarization import summarizer
 
 

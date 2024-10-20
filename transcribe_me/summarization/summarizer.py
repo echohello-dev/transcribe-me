@@ -41,8 +41,11 @@ def generate_summary(
             summary = openai_response.choices[0].message.content.strip()
         except openai.error.RateLimitError as e:
             print(f"{Fore.YELLOW}Rate limit reached, retrying in a bit...")
-        except e:
             print(f"{Fore.RED}Error: {e}")
+            raise
+        except Exception as e:
+            print(f"{Fore.RED}Error: {e}")
+            raise
     elif "anthropic" in platform:
         anthropic_client = anthropic.Anthropic(api_key=ANTHROPIC_API_KEY)
         try:
@@ -56,8 +59,11 @@ def generate_summary(
             summary = anthropic_response.content[0].text
         except anthropic.error.RateLimitError as e:
             print(f"{Fore.YELLOW}Rate limit reached, retrying in a bit...")
-        except e:
             print(f"{Fore.RED}Error: {e}")
+            raise
+        except Exception as e:
+            print(f"{Fore.RED}Error: {e}")
+            raise
     return summary
 
 

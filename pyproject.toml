@@ -9,20 +9,20 @@ description = "A CLI tool to transcribe audio files using OpenAI API"
 readme = "README.md"
 requires-python = ">=3.12"
 classifiers = [
-    "Programming Language :: Python :: 3",
-    "License :: OSI Approved :: MIT License",
-    "Operating System :: OS Independent",
+  "Programming Language :: Python :: 3",
+  "License :: OSI Approved :: MIT License",
+  "Operating System :: OS Independent",
 ]
 dependencies = [
-    "pydub",
-    "tqdm",
-    "pyyaml",
-    "colorama",
-    "halo",
-    "yamale",
-    "tenacity",
-    "openai",
-    "anthropic",
+  "pydub",
+  "tqdm",
+  "pyyaml",
+  "colorama",
+  "halo",
+  "yamale",
+  "tenacity",
+  "openai",
+  "anthropic",
 ]
 
 [project.urls]
@@ -31,10 +31,10 @@ dependencies = [
 
 [tool.setuptools]
 packages = [
-    "transcribe_me",
-    "transcribe_me.config",
-    "transcribe_me.audio",
-    "transcribe_me.summarization",
+  "transcribe_me",
+  "transcribe_me.config",
+  "transcribe_me.audio",
+  "transcribe_me.summarization",
 ]
 
 [tool.setuptools.package-data]
@@ -42,3 +42,16 @@ packages = [
 
 [tool.setuptools.dynamic]
 version = { attr = "transcribe_me.__version__" }
+
+[tool.flake8]
+ignore = ["E226", "E302", "E41"]
+max-line-length = 160
+exclude = ["tests/*"]
+max-complexity = 10
+
+[tool.autopep8]
+max_line_length = 120
+ignore = ["E226", "E302", "E41"]
+in-place = true
+recursive = true
+aggressive = 3

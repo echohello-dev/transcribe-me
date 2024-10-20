@@ -62,54 +62,41 @@ def install_config() -> None:
         f"{Fore.YELLOW}This will create a configuration file and input/output folders in the current directory."
     )
 
-    config = {
-        "openai": {
-            "models": [
-                {
-                    "temperature": 0.1,
-                    "max_tokens": 2048,
-                    "model": "gpt-4",
-                    "system_prompt": "Generate a summary with key points in bold and a Next Steps section, use Markdown, be a concise tech expert but kind to non-technical readers.",
-                },
-                {
-                    "temperature": 0.3,
-                    "max_tokens": 2048,
-                    "model": "gpt-4",
-                    "system_prompt": "Generate a summary with key points in bold and a Next Steps section, use Markdown, be a concise tech expert but kind to non-technical readers.",
-                },
-                {
-                    "temperature": 0.5,
-                    "max_tokens": 2048,
-                    "model": "gpt-4",
-                    "system_prompt": "Generate a summary with key points in bold and a Next Steps section, use Markdown, be a concise tech expert but kind to non-technical readers.",
-                },
-            ]
-        },
-        "anthropic": {
-            "models": [
-                {
-                    "temperature": 0.1,
-                    "max_tokens": 2048,
-                    "model": "claude-3-sonnet-20240229",
-                    "system_prompt": "Generate a summary with key points in bold and a Next Steps section, use Markdown, be a concise tech expert but kind to non-technical readers.",
-                },
-                {
-                    "temperature": 0.3,
-                    "max_tokens": 2048,
-                    "model": "claude-3-sonnet-20240229",
-                    "system_prompt": "Generate a summary with key points in bold and a Next Steps section, use Markdown, be a concise tech expert but kind to non-technical readers.",
-                },
-                {
-                    "temperature": 0.5,
-                    "max_tokens": 2048,
-                    "model": "claude-3-sonnet-20240229",
-                    "system_prompt": "Generate a summary with key points in bold and a Next Steps section, use Markdown, be a concise tech expert but kind to non-technical readers.",
-                },
-            ]
-        },
-        "input_folder": DEFAULT_INPUT_FOLDER,
-        "output_folder": DEFAULT_OUTPUT_FOLDER,
-    }
+    config = {"openai": {"models": [{"temperature": 0.1,
+                                     "max_tokens": 2048,
+                                     "model": "gpt-4",
+                                     "system_prompt": "Generate a summary with key points in bold and a Next Steps section, use Markdown, be a concise tech expert but kind to non-technical readers.",
+                                     },
+                                    {"temperature": 0.3,
+                                     "max_tokens": 2048,
+                                     "model": "gpt-4",
+                                     "system_prompt": "Generate a summary with key points in bold and a Next Steps section, use Markdown, be a concise tech expert but kind to non-technical readers.",
+                                     },
+                                    {"temperature": 0.5,
+                                     "max_tokens": 2048,
+                                     "model": "gpt-4",
+                                     "system_prompt": "Generate a summary with key points in bold and a Next Steps section, use Markdown, be a concise tech expert but kind to non-technical readers.",
+                                     },
+                                    ]},
+              "anthropic": {"models": [{"temperature": 0.1,
+                                        "max_tokens": 2048,
+                                        "model": "claude-3-sonnet-20240229",
+                                        "system_prompt": "Generate a summary with key points in bold and a Next Steps section, use Markdown, be a concise tech expert but kind to non-technical readers.",
+                                        },
+                                       {"temperature": 0.3,
+                                        "max_tokens": 2048,
+                                        "model": "claude-3-sonnet-20240229",
+                                        "system_prompt": "Generate a summary with key points in bold and a Next Steps section, use Markdown, be a concise tech expert but kind to non-technical readers.",
+                                        },
+                                       {"temperature": 0.5,
+                                        "max_tokens": 2048,
+                                        "model": "claude-3-sonnet-20240229",
+                                        "system_prompt": "Generate a summary with key points in bold and a Next Steps section, use Markdown, be a concise tech expert but kind to non-technical readers.",
+                                        },
+                                       ]},
+              "input_folder": DEFAULT_INPUT_FOLDER,
+              "output_folder": DEFAULT_OUTPUT_FOLDER,
+              }
 
     if not OPENAI_API_KEY:
         print(
