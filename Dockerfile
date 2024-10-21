@@ -1,4 +1,4 @@
-FROM python:3.13.0rc2-slim
+FROM python:3.12.7-slim-bullseye
 
 RUN apt-get update && apt-get install -y ffmpeg curl
 
