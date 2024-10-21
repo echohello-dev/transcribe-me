@@ -32,7 +32,6 @@ packages = [
   "transcribe_me",
   "transcribe_me.config",
   "transcribe_me.audio",
-  "transcribe_me.summarization",
 ]
 
 [tool.setuptools.package-data]
