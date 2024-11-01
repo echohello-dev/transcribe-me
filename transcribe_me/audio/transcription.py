@@ -99,42 +99,6 @@ def transcribe_with_assemblyai(
     # Write additional information to separate files
     base_name = os.path.splitext(output_path)[0]
 
-    # Speaker Diarization
-    with open(f"{base_name}_speakers.txt", "w", encoding="utf-8") as file:
-        for utterance in transcript.utterances:
-            file.write(f"Speaker {utterance.speaker}: {utterance.text}\n")
-    # Summary
-    with open(f"{base_name}_summary.txt", "w", encoding="utf-8") as file:
-        file.write(transcript.summary)
-
-    # Sentiment Analysis
-    with open(f"{base_name}_sentiment.txt", "w", encoding="utf-8") as file:
-        for result in transcript.sentiment_analysis:
-            file.write(f"Text: {result.text}\n")
-            file.write(f"Sentiment: {result.sentiment}\n")
-            file.write(f"Confidence: {result.confidence}\n")
-            file.write(f"Timestamp: {result.start} - {result.end}\n\n")
-
-    # Topic Detection
-    if transcript.iab_categories:
-        with open(f"{base_name}_topics.txt", "w", encoding="utf-8") as file:
-            # Detailed results
-            file.write("Detailed Topic Results:\n")
-            for result in transcript.iab_categories.results:
-                file.write(f"Text: {result.text}\n")
-                file.write(
-                    f"Timestamp: {result.timestamp.start} - {result.timestamp.end}\n"
-                )
-                for label in result.labels:
-                    file.write(f"  {label.label} (Relevance: {label.relevance})\n")
-                file.write("\n")
-
-            # Summary of all topics
-            file.write("\nTopic Summary:\n")
-            for topic, relevance in transcript.iab_categories.summary.items():
-                file.write(f"Audio is {relevance * 100:.2f}% relevant to {topic}\n")
-
-
 def process_audio_files(
     input_folder: str, output_folder: str, config: Dict[str, Any]
 ) -> None:
