@@ -1,13 +1,42 @@
 import os
+import importlib
 from glob import glob
-from typing import Dict, Any
-import openai
-import assemblyai as aai
+from typing import Dict, Any, Optional
 from tqdm import tqdm
 from colorama import Fore
 from tenacity import retry, wait_exponential, stop_after_attempt
 
 from .splitting import split_audio
+
+
+class ProviderImportError(ImportError):
+    """Raised when a required provider package is not installed."""
+    def __init__(self, provider: str, extra: str = None):
+        self.provider = provider
+        self.extra = extra
+        message = (
+            f"The '{provider}' package is required but not installed. "
+            f"Please install it with: pip install {extra or provider}"
+        )
+        super().__init__(message)
+
+
+def _import_openai():
+    """Dynamically import and return the openai module."""
+    try:
+        import openai
+        return openai
+    except ImportError:
+        raise ProviderImportError("openai", "openai>=1.0.0")
+
+
+def _import_assemblyai():
+    """Dynamically import and return the assemblyai module."""
+    try:
+        import assemblyai as aai
+        return aai
+    except ImportError:
+        raise ProviderImportError("assemblyai", "assemblyai>=0.16.0")
 
 
 @retry(wait=wait_exponential(multiplier=1, min=4, max=60), stop=stop_after_attempt(5))
@@ -16,6 +45,7 @@ def transcribe_chunk(file_path: str) -> str:
     Transcribe an audio chunk using the OpenAI Whisper API.
     Retry with exponential backoff in case of rate limiting.
     """
+    openai = _import_openai()
     with open(file_path, "rb") as audio_file:
         try:
             response = openai.audio.transcriptions.create(
@@ -81,6 +111,8 @@ def transcribe_with_assemblyai(
     """
     Transcribe an audio file using AssemblyAI.
     """
+    aai = _import_assemblyai()
+    
     transcription_config = aai.TranscriptionConfig(
         speech_model=aai.SpeechModel.nano,
         speaker_labels=True,

@@ -22,6 +22,10 @@ graph TD
     L --> B
 ```
 
+## :warning: Important Note
+
+Starting from version 1.0.0, you need to explicitly install the provider(s) you want to use. The package no longer installs all providers by default to reduce unnecessary dependencies.
+
 ## :key: Key Features
 
 - **Audio Transcription**: Transcribes audio files using either the OpenAI Whisper API or AssemblyAI. It supports both MP3 and M4A formats.
@@ -52,13 +56,45 @@ This has been tested with macOS, your mileage may vary on other operating system
    brew install ffmpeg
    ```
 
-3. Install the application using pip:
+3. Install the application using pip. You'll need to specify which provider(s) you want to use:
 
-    ```
-    pip install transcribe-me
-    ```
+   - For OpenAI only:
+     ```bash
+     pip install "transcribe-me[openai]"
+     ```
+   
+   - For AssemblyAI only:
+     ```bash
+     pip install "transcribe-me[assemblyai]"
+     ```
+   
+   - For all providers:
+     ```bash
+     pip install "transcribe-me[all]"
+     ```
+
+   Or if you're installing from source:
+   
+   ```bash
+   # Clone the repository
+   git clone https://github.com/echohello-dev/transcribe-me.git
+   cd transcribe-me
+   
+   # Install with the desired providers
+   pip install -e ".[openai]"  # For OpenAI
+   # or
+   pip install -e ".[assemblyai]"  # For AssemblyAI
+   # or
+   pip install -e ".[all]"  # For all providers
+   ```
+
+## :warning: Important Note
+
+Starting from version 1.0.0, you need to explicitly install the provider(s) you want to use. The package no longer installs all providers by default to reduce unnecessary dependencies.
 
 ## :wrench: Usage
+
+### Basic Usage
 
 1. Bootstrap your current directory with the configuration file:
 
@@ -66,35 +102,145 @@ This has been tested with macOS, your mileage may vary on other operating system
     transcribe-me install
     ```
 
-    This command will prompt you to enter your API keys for OpenAI and AssemblyAI if they are not already provided in environment variables. You can also set the API keys in environment variables:
+    This command will create a `.transcribe.yaml` file in your current directory and prompt you to enter your API keys for OpenAI and AssemblyAI if they are not already provided in environment variables.
+
+2. Set up your API keys (if not already done during installation):
 
     ```bash
-    export OPENAI_API_KEY=your_api_key
-    export ASSEMBLYAI_API_KEY=your_api_key
+    # For OpenAI
+    export OPENAI_API_KEY=your_openai_api_key
+    
+    # For AssemblyAI
+    export ASSEMBLYAI_API_KEY=your_assemblyai_api_key
     ```
 
-2. Place your audio files in the `input` directory (or any other directory specified in the configuration).
-3. Run the application:
+3. Place your audio files (mp3 or m4a format) in the `input` directory (or any directory specified in your configuration).
 
-   ```bash
-   transcribe-me
-   ```
+4. Run the application:
 
-   The application will transcribe each audio file in the input directory and save the transcriptions to the output directory.
+    ```bash
+    transcribe-me
+    ```
 
-4. (Optional) You can archive the input directory to keep track of the processed audio files:
+    The application will process each audio file in the input directory and save the transcriptions to the output directory.
 
-   ```bash
-   transcribe-me archive
-   ```
+5. (Optional) Archive processed files after transcription:
+
+    ```bash
+    transcribe-me archive
+    ```
+
+### Command Options
+
+The `transcribe-me` command supports several options:
+
+```bash
+# Display help information
+transcribe-me --help
+
+# Specify a custom configuration file
+transcribe-me --config /path/to/custom/config.yaml
+
+# Run in verbose mode for detailed output
+transcribe-me --verbose
+
+# Run in debug mode for even more detailed logging
+transcribe-me --debug
+```
+
+### Configuration Details
+
+The `.transcribe.yaml` file controls the behavior of the application. Here's a comprehensive example with all available options:
+
+```yaml
+# Transcription service selection
+use_assemblyai: false  # Set to true to use AssemblyAI instead of OpenAI
+
+# Folder Configuration
+input_folder: input     # Directory containing audio files to transcribe
+output_folder: output   # Directory where transcriptions will be saved
+archive_folder: archive # Directory for archived files (optional)
+
+# AssemblyAI-specific options (when use_assemblyai is true)
+assemblyai_options:
+  speech_model: nano    # Options: base, nano, large
+  speaker_labels: true  # Enable speaker diarization
+  summarization: true   # Generate summary
+  sentiment_analysis: true # Generate sentiment analysis
+  iab_categories: true  # Generate topic detection
+
+# OpenAI-specific options (when use_assemblyai is false)
+openai_options:
+  model: whisper-1      # Whisper model to use
+```
+
+### Advanced Usage
+
+#### Processing Specific Files
+
+Process only specific audio files:
+
+```bash
+# Transcribe a single file
+transcribe-me --file path/to/your/audio.mp3
+
+# Transcribe multiple files
+transcribe-me --files file1.mp3,file2.mp3
+```
+
+#### Customizing Output Format
+
+You can specify custom output formats in your configuration:
+
+```yaml
+output_format:
+  include_timestamps: true    # Include timestamps in transcription
+  include_speakers: true      # Include speaker labels (AssemblyAI only)
+  text_only: false            # Output only plain text (no JSON)
+```
+
+#### Handling Large Audio Files
+
+For large audio files, the application automatically splits them into smaller chunks for processing with OpenAI:
+
+```yaml
+splitting_options:
+  chunk_size_seconds: 600     # Split files into 10-minute chunks
+  overlap_seconds: 5          # 5-second overlap between chunks
+```
 
 ### Docker
 
-You can also run the application using Docker:
+You can also run the application using Docker. The Docker image comes with all providers pre-installed. If you're building your own Docker image, you can choose which providers to include.
 
 1. Install Docker on your machine by following the instructions on the [Docker website](https://docs.docker.com/get-docker/).
 
-2. Create a `.transcribe.yaml` configuration file:
+2. Pull the pre-built image:
+   ```bash
+   docker pull ghcr.io/echohello-dev/transcribe-me:latest
+   ```
+
+   Or build your own image with specific providers:
+   ```dockerfile
+   FROM python:3.12-slim
+   
+   # Install FFmpeg
+   RUN apt-get update && apt-get install -y ffmpeg
+   
+   # Copy the application code
+   COPY . /app
+   WORKDIR /app
+   
+   # Install the package with the desired providers
+   # Choose one of the following:
+   RUN pip install -e ".[openai]"        # For OpenAI only
+   # RUN pip install -e ".[assemblyai]"   # For AssemblyAI only
+   # RUN pip install -e ".[all]"          # For all providers
+   
+   ENTRYPOINT ["transcribe-me"]
+   ```
+
+3. Create a `.transcribe.yaml` configuration file:
 
     ```bash
     touch .transcribe.yaml
@@ -202,6 +348,40 @@ output_folder: output
    ```bash
    brew install ffmpeg
    ```
+
+3. Install the package with pip. You can choose which providers to install:
+
+   - For OpenAI only:
+     ```bash
+     pip install -e ".[openai]"
+     ```
+   
+   - For AssemblyAI only:
+     ```bash
+     pip install -e ".[assemblyai]"
+     ```
+   
+   - For all providers:
+     ```bash
+     pip install -e ".[all]"
+     ```
+
+   Or using uvx:
+   
+   - For OpenAI only:
+     ```bash
+     uvx install -e ".[openai]"
+     ```
+   
+   - For AssemblyAI only:
+     ```bash
+     uvx install -e ".[assemblyai]"
+     ```
+   
+   - For all providers:
+     ```bash
+     uvx install -e ".[all]"
+     ```
 
 3. Install the Python dependencies and create a virtual environment:
 

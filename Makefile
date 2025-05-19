@@ -43,9 +43,11 @@ format:
 lint:
 	$(VENV) python -m pylint transcribe_me --fail-under 7
 
-# TODO: $(VENV) python -m unittest discover -s .
-test:
-	@echo "Not implemented"
+test: install-test
+	$(VENV) python -m pytest tests/unit -v --cov=transcribe_me --cov-report=term-missing
+
+install-test:
+	$(VENV) pip install -e ".[test]"
 
 build:
 	rm -rdf build dist
