@@ -8,3 +8,6 @@ output/
 archive/
 dist/
 .env
+.coverage
+coverage.xml
+junit/
