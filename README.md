@@ -24,7 +24,7 @@ graph TD
 
 ## :warning: Important Note
 
-Starting from version 1.0.0, you need to explicitly install the provider(s) you want to use. The package no longer installs all providers by default to reduce unnecessary dependencies.
+Starting from version 1.0.0, you need to explicitly install the provider(s) you want to use. The package no longer installs all providers by default to reduce unnecessary dependencies. This helps keep your environment lean by only installing what you actually need.
 
 ## :key: Key Features
 
@@ -88,10 +88,6 @@ This has been tested with macOS, your mileage may vary on other operating system
    pip install -e ".[all]"  # For all providers
    ```
 
-## :warning: Important Note
-
-Starting from version 1.0.0, you need to explicitly install the provider(s) you want to use. The package no longer installs all providers by default to reduce unnecessary dependencies.
-
 ## :wrench: Usage
 
 ### Basic Usage
@@ -129,6 +125,12 @@ Starting from version 1.0.0, you need to explicitly install the provider(s) you 
     ```bash
     transcribe-me archive
     ```
+
+### Provider Selection
+
+When running Transcribe Me, the provider used for transcription is determined by your configuration file. By default, OpenAI is used, but you can switch to AssemblyAI by setting `use_assemblyai: true` in your `.transcribe.yaml` file.
+
+Make sure you've installed the appropriate provider package as described in the installation section. If you try to use a provider that isn't installed, you'll receive a helpful error message with instructions on how to install the missing dependency.
 
 ### Command Options
 
