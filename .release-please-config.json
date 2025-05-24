@@ -1,0 +1,26 @@
+{
+  "packages": {
+    ".": {
+      "release-type": "python",
+      "package-name": "transcribe-me",
+      "bump-minor-pre-major": true,
+      "bump-patch-for-minor-pre-major": true,
+      "include-v-in-tag": false,
+      "changelog-path": "CHANGELOG.md",
+      "draft": false,
+      "prerelease": false,
+      "extra-files": [
+        {
+          "type": "json",
+          "path": "package.json",
+          "jsonpath": "$.version"
+        },
+        {
+          "type": "toml",
+          "path": "pyproject.toml",
+          "jsonpath": "$.project.version"
+        }
+      ]
+    }
+  }
+}
