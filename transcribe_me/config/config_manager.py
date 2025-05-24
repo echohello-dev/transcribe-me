@@ -110,6 +110,7 @@ def install_config() -> None:
 def append_to_shell_profile(line):
     """
     Append a line to the appropriate shell profile file (.zshrc or .bashrc).
+    Asks for confirmation before modifying any files.
 
     Args:
         line (str): The line to append to the shell profile.
@@ -120,10 +121,28 @@ def append_to_shell_profile(line):
     else:
         profile_file = os.path.expanduser("~/.bashrc")
 
-    with open(profile_file, "a") as f:
-        f.write(f"\n{line}\n")
-
-    print(f"{Fore.GREEN}API key added to {profile_file}")
+    # Ask for confirmation before modifying the shell profile
+    print(f"{Fore.YELLOW}Would you like to add the API key to your {profile_file}?")
+    print(f"{Fore.YELLOW}This will append the following line: {line}")
+    confirmation = input(f"{Fore.CYAN}Add to shell profile? (y/N): ").lower()
+    
+    if confirmation == 'y' or confirmation == 'yes':
+        try:
+            with open(profile_file, "a") as f:
+                f.write(f"\n{line}\n")
+            print(f"{Fore.GREEN}API key added to {profile_file}")
+        except PermissionError:
+            print(f"{Fore.RED}Permission denied when trying to write to {profile_file}")
+            print(f"{Fore.YELLOW}You may need to add the API key manually:")
+            print(f"{Fore.YELLOW}{line}")
+        except Exception as e:
+            print(f"{Fore.RED}Error writing to {profile_file}: {e}")
+            print(f"{Fore.YELLOW}You may need to add the API key manually:")
+            print(f"{Fore.YELLOW}{line}")
+    else:
+        print(f"{Fore.YELLOW}Skipped adding API key to shell profile.")
+        print(f"{Fore.YELLOW}Remember to set the environment variable manually:")
+        print(f"{Fore.YELLOW}{line}")
 
 
 def load_config() -> Dict[str, Any]:
