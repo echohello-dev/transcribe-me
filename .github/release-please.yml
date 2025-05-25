@@ -1,0 +1,7 @@
+handleGHRelease: true
+releaseLabels:
+  - "release"
+  - "automated pr"
+branches:
+  - branch: main
+    handleGHRelease: true
