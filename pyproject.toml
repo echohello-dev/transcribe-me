@@ -3,7 +3,7 @@ transcribe-me = "transcribe_me.main:main"
 
 [project]
 name = "transcribe-me"
-version = "0.1.0"
+version = "0.2.6"
 authors = [{ name = "echoHello", email = "bash@echohello.dev" }]
 description = "A CLI tool to transcribe audio files using OpenAI API"
 readme = "README.md"
@@ -29,20 +29,20 @@ openai = ["openai>=1.0.0"]
 assemblyai = ["assemblyai>=0.16.0"]
 all = ["openai>=1.0.0", "assemblyai>=0.16.0"]
 test = [
-    "pytest>=7.0.0",
-    "pytest-cov>=4.0.0",
-    "pytest-mock>=3.10.0",
-    "pytest-xdist>=3.0.0",
-    "coverage[toml]>=6.0.0",
+  "pytest>=7.0.0",
+  "pytest-cov>=4.0.0",
+  "pytest-mock>=3.10.0",
+  "pytest-xdist>=3.0.0",
+  "coverage[toml]>=6.0.0",
 ]
 
 dev = [
-    "transcribe-me[test]",
-    "black>=23.0.0",
-    "isort>=5.0.0",
-    "mypy>=1.0.0",
-    "flake8>=6.0.0",
-    "pre-commit>=3.0.0",
+  "transcribe-me[test]",
+  "black>=23.0.0",
+  "isort>=5.0.0",
+  "mypy>=1.0.0",
+  "flake8>=6.0.0",
+  "pre-commit>=3.0.0",
 ]
 
 [project.urls]
@@ -50,11 +50,7 @@ dev = [
 "Bug Tracker" = "https://github.com/echohello-dev/transcribe-me/issues"
 
 [tool.setuptools]
-packages = [
-  "transcribe_me",
-  "transcribe_me.config",
-  "transcribe_me.audio",
-]
+packages = ["transcribe_me", "transcribe_me.config", "transcribe_me.audio"]
 
 [tool.setuptools.package-data]
 "transcribe_me.config" = ["*.yaml"]
