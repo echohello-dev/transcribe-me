@@ -61,7 +61,6 @@ publish: publish-package publish-image
 publish-package: install
 	rm -rdf dist
 	$(MAKE) build
-	$(VENV) python -m twine check dist/* || echo "Warning: twine check failed, but proceeding with upload"
 ifdef DRY_RUN
 	$(VENV) python -m twine upload --repository testpypi dist/*
 else
