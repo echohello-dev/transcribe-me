@@ -1,0 +1,187 @@
+name: Fix Release
+
+on:
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: 'Tag/version to fix (e.g., v1.2.3 or 1.2.3)'
+        required: true
+        type: string
+      publish_package:
+        description: 'Republish package to PyPI'
+        required: true
+        type: boolean
+        default: true
+      publish_container:
+        description: 'Republish container images'
+        required: true
+        type: boolean
+        default: true
+      dry_run:
+        description: 'Dry run mode (test without actually publishing)'
+        required: false
+        type: boolean
+        default: false
+
+permissions:
+  contents: read
+  packages: write
+  id-token: write
+
+jobs:
+  validate-inputs:
+    runs-on: ubuntu-latest
+    outputs:
+      normalized_tag: ${{ steps.normalize.outputs.tag }}
+    steps:
+      - name: Normalize tag format
+        id: normalize
+        run: |
+          TAG="${{ github.event.inputs.tag }}"
+          # Remove 'v' prefix if present for consistency
+          NORMALIZED_TAG=${TAG#v}
+          # Add 'v' prefix for git operations
+          GIT_TAG="v${NORMALIZED_TAG}"
+          echo "tag=${GIT_TAG}" >> $GITHUB_OUTPUT
+          echo "Normalized tag: ${GIT_TAG}"
+      
+      - uses: actions/checkout@v4
+        with:
+          fetch-tags: true
+      
+      - name: Verify tag exists
+        run: |
+          if ! git tag -l | grep -q "^${{ steps.normalize.outputs.tag }}$"; then
+            echo "❌ Tag ${{ steps.normalize.outputs.tag }} does not exist"
+            echo "Available tags:"
+            git tag -l | tail -10
+            exit 1
+          fi
+          echo "✅ Tag ${{ steps.normalize.outputs.tag }} exists"
+
+  fix-package:
+    needs: validate-inputs
+    if: ${{ github.event.inputs.publish_package == 'true' }}
+    runs-on: ubuntu-latest
+    
+    env:
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      TWINE_PASSWORD: ${{ secrets.PYPI_TOKEN }}
+      DRY_RUN: ${{ github.event.inputs.dry_run }}
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ needs.validate-inputs.outputs.normalized_tag }}
+          fetch-tags: true
+      
+      - uses: asdf-vm/actions/install@v4
+      
+      - name: Check if package version already exists on PyPI
+        run: |
+          TAG="${{ needs.validate-inputs.outputs.normalized_tag }}"
+          VERSION=${TAG#v}
+          echo "Checking if transcribe-me version ${VERSION} exists on PyPI..."
+          
+          if pip index versions transcribe-me | grep -q "${VERSION}"; then
+            echo "⚠️  Version ${VERSION} already exists on PyPI"
+            echo "This will likely fail unless you're using --skip-existing or test PyPI"
+          else
+            echo "✅ Version ${VERSION} not found on PyPI, safe to publish"
+          fi
+      
+      - name: Publish package to PyPI
+        run: |
+          if [[ "${{ github.event.inputs.dry_run }}" == "true" ]]; then
+            echo "🧪 DRY RUN: Would publish package to PyPI"
+            echo "Command that would run: make publish-package"
+          else
+            echo "📦 Publishing package to PyPI..."
+            make publish-package
+          fi
+
+  fix-container:
+    needs: validate-inputs
+    if: ${{ github.event.inputs.publish_container == 'true' }}
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        arch: [linux/amd64, linux/arm64]
+
+    env:
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ needs.validate-inputs.outputs.normalized_tag }}
+          fetch-depth: 1
+      
+      - run: git fetch --tags origin
+      
+      - uses: docker/setup-qemu-action@v3
+      - uses: docker/setup-buildx-action@v3
+      
+      - name: Check existing container images
+        run: |
+          TAG="${{ needs.validate-inputs.outputs.normalized_tag }}"
+          VERSION=${TAG#v}
+          echo "Checking for existing container images..."
+          
+          # Check if images already exist (this will fail gracefully if they don't)
+          docker manifest inspect ghcr.io/echohello-dev/transcribe-me:${VERSION} 2>/dev/null && \
+            echo "⚠️  Image ghcr.io/echohello-dev/transcribe-me:${VERSION} already exists" || \
+            echo "✅ Image ghcr.io/echohello-dev/transcribe-me:${VERSION} not found, safe to publish"
+          
+          docker manifest inspect ghcr.io/echohello-dev/transcribe-me:latest 2>/dev/null && \
+            echo "⚠️  Image ghcr.io/echohello-dev/transcribe-me:latest already exists (will be overwritten)" || \
+            echo "✅ Image ghcr.io/echohello-dev/transcribe-me:latest not found"
+      
+      - name: Publish container image
+        run: |
+          if [[ "${{ github.event.inputs.dry_run }}" == "true" ]]; then
+            echo "🧪 DRY RUN: Would publish container image for ${{ matrix.arch }}"
+            echo "Command that would run: make publish-image"
+          else
+            echo "🐳 Publishing container image for ${{ matrix.arch }}..."
+            make publish-image
+          fi
+        env:
+          DOCKER_DEFAULT_PLATFORM: ${{ matrix.arch }}
+
+  summary:
+    needs: [validate-inputs, fix-package, fix-container]
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - name: Release fix summary
+        run: |
+          echo "## 🔧 Release Fix Summary" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Tag:** ${{ needs.validate-inputs.outputs.normalized_tag }}" >> $GITHUB_STEP_SUMMARY
+          echo "**Dry Run:** ${{ github.event.inputs.dry_run }}" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          
+          if [[ "${{ github.event.inputs.publish_package }}" == "true" ]]; then
+            if [[ "${{ needs.fix-package.result }}" == "success" ]]; then
+              echo "✅ **Package:** Successfully published" >> $GITHUB_STEP_SUMMARY
+            else
+              echo "❌ **Package:** Failed to publish" >> $GITHUB_STEP_SUMMARY
+            fi
+          else
+            echo "⏭️ **Package:** Skipped" >> $GITHUB_STEP_SUMMARY
+          fi
+          
+          if [[ "${{ github.event.inputs.publish_container }}" == "true" ]]; then
+            if [[ "${{ needs.fix-container.result }}" == "success" ]]; then
+              echo "✅ **Container:** Successfully published" >> $GITHUB_STEP_SUMMARY
+            else
+              echo "❌ **Container:** Failed to publish" >> $GITHUB_STEP_SUMMARY
+            fi
+          else
+            echo "⏭️ **Container:** Skipped" >> $GITHUB_STEP_SUMMARY
+          fi
+          
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "View the [release on GitHub](https://github.com/${{ github.repository }}/releases/tag/${{ needs.validate-inputs.outputs.normalized_tag }})" >> $GITHUB_STEP_SUMMARY 
