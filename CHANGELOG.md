@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.0.1](https://github.com/echohello-dev/transcribe-me/compare/transcribe-me-1.0.0...transcribe-me-1.0.1) (2025-05-25)
+
+
+### Bug Fixes
+
+* add build-essential to Dockerfile for native dependency compilation ([388eac9](https://github.com/echohello-dev/transcribe-me/commit/388eac92fd912f3654ba279ea433878e3e850b67))
+* resolve package publishing issues - Add missing [build-system] section to pyproject.toml - Update setuptools version requirement to &gt;=70.0 - Fix license format to use modern SPDX expression - Add TWINE_USERNAME environment variable to GitHub Actions - Add debugging steps to workflow for better error diagnosis - Make twine check non-blocking in Makefile due to false positive errors - Exclude tests from package distribution ([72a73de](https://github.com/echohello-dev/transcribe-me/commit/72a73de3817b2d32c27a9f1d27a0f52a6096cf7e))
+
 ## [1.0.0](https://github.com/echohello-dev/transcribe-me/compare/transcribe-me-0.2.6...transcribe-me-1.0.0) (2025-05-25)
 
 
