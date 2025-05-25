@@ -21,6 +21,7 @@ jobs:
         id: release
         with:
           release-type: python
+          token: ${{ secrets.GITHUB_TOKEN }}
 
   publish-pypi:
     needs: release-please
@@ -44,9 +45,15 @@ jobs:
         arch: [linux/amd64, linux/arm64]
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-tags: true
       - uses: asdf-vm/actions/install@v4
+      - uses: docker/setup-qemu-action@v3
+      - uses: docker/setup-buildx-action@v3
       - name: Publish Docker Image
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_ACTOR: ${{ github.actor }}
+          CI: true
           DOCKER_DEFAULT_PLATFORM: ${{ matrix.arch }}
         run: make publish-image
