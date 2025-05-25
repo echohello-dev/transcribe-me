@@ -33,6 +33,7 @@ jobs:
     
     env:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      TWINE_USERNAME: __token__
       TWINE_PASSWORD: ${{ secrets.PYPI_TOKEN }}
 
     steps:
@@ -40,8 +41,16 @@ jobs:
         with:
           fetch-tags: true
       - uses: asdf-vm/actions/install@v4
+      - name: Check package contents before build
+        run: |
+          ls -la
+          cat pyproject.toml
       - name: Publish package to PyPI
         run: make publish-package
+      - name: Check package contents after build
+        run: |
+          ls -la dist/
+          python -m twine check dist/* || true
 
   publish-image:
     needs: release-please

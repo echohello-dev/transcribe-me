@@ -1,3 +1,7 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
 [project.scripts]
 transcribe-me = "transcribe_me.main:main"
 
@@ -7,10 +11,10 @@ version = "1.0.0"
 authors = [{ name = "echoHello", email = "bash@echohello.dev" }]
 description = "A CLI tool to transcribe audio files using OpenAI API"
 readme = "README.md"
+license = "MIT"
 requires-python = ">=3.12"
 classifiers = [
   "Programming Language :: Python :: 3",
-  "License :: OSI Approved :: MIT License",
   "Operating System :: OS Independent",
 ]
 dependencies = [
@@ -50,7 +54,7 @@ dev = [
 "Bug Tracker" = "https://github.com/echohello-dev/transcribe-me/issues"
 
 [tool.setuptools]
-packages = ["transcribe_me", "transcribe_me.config", "transcribe_me.audio"]
+packages = { find = { exclude = ["tests*"] } }
 
 [tool.setuptools.package-data]
 "transcribe_me.config" = ["*.yaml"]

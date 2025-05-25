@@ -61,6 +61,7 @@ publish: publish-package publish-image
 publish-package: install
 	rm -rdf dist
 	$(MAKE) build
+	$(VENV) python -m twine check dist/*
 ifdef DRY_RUN
 	$(VENV) python -m twine upload --repository testpypi dist/*
 else
