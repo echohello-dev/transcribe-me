@@ -9,7 +9,6 @@
       "changelog-path": "CHANGELOG.md",
       "draft": false,
       "prerelease": false,
-      "initial-version": "1.0.0",
       "extra-files": [
         {
           "type": "toml",
