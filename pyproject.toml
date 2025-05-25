@@ -1,5 +1,5 @@
 [build-system]
-requires = ["setuptools>=61.0", "wheel"]
+requires = ["setuptools>=70.0", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project.scripts]
@@ -54,7 +54,7 @@ dev = [
 "Bug Tracker" = "https://github.com/echohello-dev/transcribe-me/issues"
 
 [tool.setuptools]
-packages = { find = { exclude = ["tests*"] } }
+packages = ["transcribe_me", "transcribe_me.config", "transcribe_me.audio"]
 
 [tool.setuptools.package-data]
 "transcribe_me.config" = ["*.yaml"]
