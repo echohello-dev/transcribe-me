@@ -24,38 +24,3 @@ jobs:
         with:
           config-file: .release-please-config.json
           token: ${{ secrets.GITHUB_TOKEN }}
-
-  publish-pypi:
-    needs: release-please
-    if: ${{ needs.release-please.outputs.release_created }}
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - uses: asdf-vm/actions/install@v4
-      - name: Publish to PyPI
-        env:
-          TWINE_USERNAME: ${{ secrets.PYPI_USERNAME }}
-          TWINE_PASSWORD: ${{ secrets.PYPI_PASSWORD }}
-        run: make publish-package
-
-  publish-docker:
-    needs: release-please
-    if: ${{ needs.release-please.outputs.release_created }}
-    runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        arch: [linux/amd64, linux/arm64]
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          fetch-tags: true
-      - uses: asdf-vm/actions/install@v4
-      - uses: docker/setup-qemu-action@v3
-      - uses: docker/setup-buildx-action@v3
-      - name: Publish Docker Image
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          GITHUB_ACTOR: ${{ github.actor }}
-          CI: true
-          DOCKER_DEFAULT_PLATFORM: ${{ matrix.arch }}
-        run: make publish-image
