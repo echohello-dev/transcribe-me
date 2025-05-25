@@ -1,0 +1,177 @@
+# Transcribe Me - Cursor Rules
+
+## Project Overview
+This is a Python CLI application for transcribing audio files using OpenAI Whisper API or AssemblyAI. The project follows modern Python packaging standards with optional dependencies for different providers.
+
+## Code Style & Standards
+
+### Python Standards
+- Use Python 3.12+ features and syntax
+- Follow PEP 8 with these specific configurations:
+  - Max line length: 160 characters (as per flake8 config)
+  - Use Black for formatting with 120 character line length
+  - Use isort for import sorting
+- Type hints are encouraged but not strictly enforced
+- Use descriptive variable and function names
+
+### Code Organization
+- Follow the existing package structure:
+  - `transcribe_me/` - Main package
+  - `transcribe_me/config/` - Configuration management
+  - `transcribe_me/audio/` - Audio processing and transcription
+  - `tests/unit/` - Unit tests organized by module
+- Use relative imports within the package
+- Keep modules focused on single responsibilities
+
+### Error Handling
+- Use custom exceptions like `ProviderImportError` for specific error cases
+- Implement graceful degradation when optional dependencies are missing
+- Provide helpful error messages with installation instructions
+- Use tenacity for retry logic on API calls
+
+## Dependencies & Providers
+
+### Core Dependencies
+- Always include core dependencies: pydub, tqdm, pyyaml, colorama, halo, yamale, tenacity
+- Use optional dependencies for providers:
+  - `[openai]` for OpenAI Whisper API
+  - `[assemblyai]` for AssemblyAI
+  - `[all]` for all providers
+  - `[test]` for testing dependencies
+  - `[dev]` for development tools
+
+### Provider Pattern
+- Use lazy imports for optional dependencies
+- Implement `_import_openai()` and `_import_assemblyai()` functions
+- Raise `ProviderImportError` with installation instructions when providers are missing
+- Support both OpenAI and AssemblyAI with feature parity where possible
+
+## CLI Design
+
+### Command Structure
+- Main command: `transcribe-me`
+- Subcommands: `install`, `archive`
+- Use argparse for command-line parsing
+- Support configuration via YAML files and environment variables
+- Provide verbose and debug modes
+
+### Configuration
+- Use `.transcribe.yaml` for configuration
+- Support environment variables for API keys
+- Validate configuration with yamale schemas
+- Provide sensible defaults
+
+## Testing
+
+### Test Organization
+- Use pytest as the testing framework
+- Organize tests in `tests/unit/` mirroring the package structure
+- Use pytest-cov for coverage reporting
+- Use pytest-mock for mocking
+- Use pytest-xdist for parallel test execution
+
+### Test Patterns
+- Mock external API calls (OpenAI, AssemblyAI)
+- Test both success and failure scenarios
+- Test provider import errors
+- Use fixtures for common test data
+- Aim for high test coverage
+
+### Mocking Guidelines
+- Mock file operations when testing audio processing
+- Mock API clients and responses
+- Test retry logic with simulated failures
+- Use `patch.dict('sys.modules')` for import mocking
+
+## Audio Processing
+
+### File Handling
+- Support MP3 and M4A formats
+- Use pydub for audio manipulation
+- Implement audio splitting for large files
+- Handle temporary files properly with cleanup
+
+### Transcription Flow
+- Support both streaming and batch processing
+- Implement progress tracking with tqdm and halo
+- Handle rate limiting with exponential backoff
+- Support different output formats (text, JSON with metadata)
+
+## Development Workflow
+
+### Tools & Linting
+- Use Black for code formatting
+- Use isort for import sorting
+- Use flake8 for linting (ignore E226, E302, E41)
+- Use pylint with minimum score of 7
+- Use mypy for type checking
+
+### Build & Release
+- Use pyproject.toml for project configuration
+- Support building with `python -m build`
+- Use Makefile for common development tasks
+- Support Docker containerization
+- Use GitHub Actions for CI/CD
+
+### Environment Setup
+- Use virtual environments (venv)
+- Support asdf for Python version management
+- Require FFmpeg as external dependency
+- Use requirements.txt for dependency freezing
+
+## File Patterns
+
+### Ignore Patterns
+- Standard Python ignores: `__pycache__`, `*.egg-info`, `build/`, `dist/`
+- Environment files: `.env`, `venv/`
+- Application directories: `input/`, `output/`, `archive/`
+- Test artifacts: `.coverage`, `coverage.xml`, `junit/`
+
+### Configuration Files
+- Use YAML for configuration files
+- Validate with schemas in `config/schema.yaml`
+- Support both local and global configuration
+
+## API Integration
+
+### OpenAI Integration
+- Use official openai package (>=1.0.0)
+- Implement retry logic for rate limits
+- Support whisper-1 model
+- Handle file uploads properly
+
+### AssemblyAI Integration
+- Use official assemblyai package (>=0.16.0)
+- Support advanced features: speaker diarization, summarization, sentiment analysis
+- Support different speech models (base, nano, large)
+- Handle polling for transcript completion
+
+## Documentation
+
+### Code Documentation
+- Use docstrings for modules, classes, and functions
+- Include type hints where beneficial
+- Document configuration options thoroughly
+- Provide usage examples in docstrings
+
+### User Documentation
+- Maintain comprehensive README with installation and usage
+- Include mermaid diagrams for complex flows
+- Document all CLI options and configuration
+- Provide troubleshooting guides
+
+## Security & Best Practices
+
+### API Keys
+- Never commit API keys to version control
+- Use environment variables for sensitive data
+- Provide clear instructions for key management
+- Support multiple ways to configure keys
+
+### File Handling
+- Validate file paths and extensions
+- Handle file permissions gracefully
+- Clean up temporary files
+- Support different audio formats safely
+
+When working on this project, prioritize maintainability, clear error messages, and user experience. The CLI should be intuitive and provide helpful feedback throughout the transcription process. 
