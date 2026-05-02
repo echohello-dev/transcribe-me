@@ -8,11 +8,12 @@ export interface ElectronAPI {
   selectModelPath: () => Promise<string | null>
   downloadModel: (modelId: string) => Promise<string>
   detectMeetingApps: () => Promise<string[]>
+  exportTranscript: (data: any) => Promise<boolean>
   onRecordingStarted: (callback: () => void) => void
   onRecordingStopped: (callback: () => void) => void
   onRecordingError: (callback: (error: string) => void) => void
   onTranscriptionStarted: (callback: () => void) => void
-  onTranscriptionResult: (callback: (text: string) => void) => void
+  onTranscriptionResult: (callback: (result: any) => void) => void
   onTranscriptionError: (callback: (error: string) => void) => void
   onDownloadProgress: (callback: (progress: string) => void) => void
   onMeetingAppsDetected: (callback: (apps: string[]) => void) => void
@@ -28,6 +29,7 @@ const api: ElectronAPI = {
   selectModelPath: () => ipcRenderer.invoke('select-model-path'),
   downloadModel: (modelId: string) => ipcRenderer.invoke('download-model', modelId),
   detectMeetingApps: () => ipcRenderer.invoke('detect-meeting-apps'),
+  exportTranscript: (data: any) => ipcRenderer.invoke('export-transcript', data),
 
   onRecordingStarted: (callback: () => void) => {
     ipcRenderer.on('recording-started', () => callback())
@@ -41,8 +43,8 @@ const api: ElectronAPI = {
   onTranscriptionStarted: (callback: () => void) => {
     ipcRenderer.on('transcription-started', () => callback())
   },
-  onTranscriptionResult: (callback: (text: string) => void) => {
-    ipcRenderer.on('transcription-result', (_, text) => callback(text))
+  onTranscriptionResult: (callback: (result: any) => void) => {
+    ipcRenderer.on('transcription-result', (_, result) => callback(result))
   },
   onTranscriptionError: (callback: (error: string) => void) => {
     ipcRenderer.on('transcription-error', (_, error) => callback(error))
@@ -63,4 +65,4 @@ const api: ElectronAPI = {
 
 contextBridge.exposeInMainWorld('electronAPI', api)
 
-export type { ElectronAPI as ElectronAPIType }
+export type { ElectronAPI }
