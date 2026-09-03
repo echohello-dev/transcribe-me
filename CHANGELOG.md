@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.0](https://github.com/echohello-dev/transcribe-me/compare/transcribe-me-1.0.1...transcribe-me-1.1.0) (2026-09-03)
+
+
+### Features
+
+* Add Electron desktop app with MLX Parakeet transcription ([#25](https://github.com/echohello-dev/transcribe-me/issues/25)) ([e87ba87](https://github.com/echohello-dev/transcribe-me/commit/e87ba871c39f070a0196614772c159ab73417a3d))
+
 ## [1.0.1](https://github.com/echohello-dev/transcribe-me/compare/transcribe-me-1.0.0...transcribe-me-1.0.1) (2025-05-25)
 
 
